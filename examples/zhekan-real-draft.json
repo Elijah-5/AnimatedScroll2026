@@ -1,0 +1,350 @@
+{
+  "schemaVersion": "1.1",
+  "state": "draft",
+  "issues": [
+    "a7ee675501ba: 尚未批准",
+    "b110a5e07c0a: 尚未批准",
+    "ac97c6d33a94: 尚未批准",
+    "8f10b0ec59eb: 对白不能仅凭人物背景标为有依据；需要逐字记录依据",
+    "8f10b0ec59eb: 尚未批准",
+    "9c378cc1a701: 尚未批准",
+    "f4ec1aa8b68b: 尚未批准",
+    "检查建议尚未处理: 结构一致性：project.sceneCount 为 1，scenes 长度亦为 1；场景 28e1d77b5696 下 6 个单元 id 唯一、无重复，characterIds 均为已定义人物。通过。",
+    "检查建议尚未处理: 引用可核性：a7ee675501ba、b110a5e07c0a、8f10b0ec59eb、9c378cc1a701、f4ec1aa8b68b 所填 sourceId/sourceVersion 均存在于 sources，且 quote 可在对应 text 中逐字定位（含“云攀殿槛，槛折。”“使其言是，不可诛；其言非，固当容之。”），未发现编造引文或错误 ID。通过。",
+    "检查建议尚未处理: 引用层级提示：全部 quote 均取自用户整理材料（source 标注为非完整原文转录），71c5aaf983e3 明示“标出的短引文需对照原文版本”。建议发布前对“云攀殿槛，槛折。”与“使其言是，不可诛；其言非，固当容之。”做原文版本复核，或在文案中保留待核标注。",
+    "检查建议尚未处理: 事实与虚构分离：ac97c6d33a94 标为 fiction、无 references、rationale 说明“仅补未记载的过渡动作，不改变后续劝谏与结局”，未影响 supported 单元的历史结局。通过。",
+    "检查建议尚未处理: 时间边界问题：9c378cc1a701 将“成帝息怒、朱云获全”（当日结果）与“后来修栏、修补旧栏”（事后处置）合并为一个 supported 单元，跨两个时间点。建议拆为两个单元，以免与 intent.fixed 中“汉代事件与宋代绘画分开”“旧栏修补而非替换”的时间层次混淆。",
+    "检查建议尚未处理: 概述差异未落位：a2382d1ac361 提示馆方概述把旧栏处理概括为“保留原状”，而《朱云传》作“勿易、因而辑之”，要求不把差异抹平。当前 project.fixed 与 9c378cc1a701 统一写作“不要换掉、应修补”，项目中无任何单元记录该措辞差异。建议补一条 inference 单元说明两者差别，不改动既有 supported 表述。",
+    "检查建议尚未处理: supported 单元混入否定性论断：b110a5e07c0a 文本含“不是主动砸殿或折门槛”，属对常见误读的排除而非事件本身。建议将否定表述移入独立 inference 或备注单元，使该 supported 单元仅保留“被带离时攀槛—槛折”的可核事实。",
+    "检查建议尚未处理: 粒度偏粗：a7ee675501ba 在单条内串联指斥尸位素餐、请尚方斩马剑、点名张禹、成帝震怒、命御史带离等多个动作。若后续需与画面人物动作挂接，建议拆分（不改变 supported 属性）。",
+    "检查建议尚未处理: 动作与对白同置：8f10b0ec59eb 归为 dialogue，但文本包含“免冠解印绶、叩头流血”的动作描述。若需与画面动作逐项对应，建议拆为 action 与 dialogue 两个 supported 单元，speakerId 仍为 59921d0045bf。",
+    "检查建议尚未处理: 画面边界：observations 与 annotations 均为空，无任何单元引用 annotationId，符合“无实测标注不得虚构对应”的要求；f4ec1aa8b68b 仅据来源推得“宋画非汉代现场记录”并自标待实测校准，与 imageNote（局部截图、含浏览器控件）一致。通过。",
+    "检查建议尚未处理: 张禹背景未被误用：82b3413944d7 所载田产奢华、灾异答复等内容未被写入任何当日罪证单元，符合 forbidden。该来源目前在项目内完全未被引用，如需体现“帝师、前丞相”身份，可在人物设定层引用，无需进入当日事件单元。",
+    "检查建议尚未处理: 禁项复核：未出现把门槛或砸殿当作折槛；未把张禹不同时间事迹拼接为当日罪证；未把观众互动失败写成真实历史结局。project.fixed 四条与现有单元内容一致。通过。"
+  ],
+  "project": {
+    "id": "7a4465594512",
+    "version": 4,
+    "title": "折槛图 · 真实模型联调草稿",
+    "sceneCount": 1,
+    "imageVersion": 1,
+    "documents": [],
+    "observations": [],
+    "matches": [],
+    "sources": [
+      {
+        "id": "a2382d1ac361",
+        "version": 1,
+        "title": "画作档案与解释边界",
+        "citation": "用户提供资料；馆藏资料 https://digitalarchive.npm.gov.tw/Collection/Detail/38?dep=P",
+        "location": "用户提供的整理材料，非完整原文转录",
+        "text": "馆藏名称为宋人《折槛图》轴，佚名，无作者款印。绢本设色，173.9 × 101.8厘米，收藏于台北故宫博物院。故事发生在汉代，画作属于宋代绘画。用户提供的截图为局部图像，不是完整画作。馆方页面的部分概要将旧栏处理概括为保留原状；解读应对照《朱云传》的勿易、因而辑之，不把概述差异抹平。",
+        "confirmed": true,
+        "method": "user_notes",
+        "sourceType": "historical_material"
+      },
+      {
+        "id": "71c5aaf983e3",
+        "version": 1,
+        "title": "朱云传 · 用户整理的事件笔记",
+        "citation": "《汉书》卷六十七《朱云传》 https://zh.wikisource.org/zh-hans/漢書/卷067",
+        "location": "用户提供的整理材料，非完整原文转录",
+        "text": "朱云在公卿面前指责大臣不能匡正君主、造福百姓，只是尸位素餐。他请求赐尚方斩马剑，处死佞臣，皇帝追问时点名安昌侯张禹。成帝以当众侮辱帝师为由震怒，命御史将朱云带走。朱云被带离时攀住殿前栏杆，栏杆折断，并非主动砸毁宫殿或折断门槛。传文记：“云攀殿槛，槛折。”朱云以关龙逢、比干自比。左将军辛庆忌免冠解印绶，叩头流血，请求容纳逆耳之言：“使其言是，不可诛；其言非，固当容之。”成帝息怒，朱云得以保全。后来修栏时皇帝要求不要换掉，而应修补旧栏，用来表彰直臣。此事件段未明确具体年份。以上是用户整理笔记，标出的短引文需对照原文版本。",
+        "confirmed": true,
+        "method": "user_notes",
+        "sourceType": "historical_material"
+      },
+      {
+        "id": "5bdd4d4d274e",
+        "version": 1,
+        "title": "主要人物 · 用户整理笔记",
+        "citation": "《汉书》卷六十七及卷八十一 https://zh.wikisource.org/zh-hans/漢書/卷081",
+        "location": "用户提供的整理材料，非完整原文转录",
+        "text": "朱云字游，鲁人，后迁平陵；青年时交游侠客、以勇力闻名，四十岁开始学习《易》《论语》，曾任博士、杜陵令、槐里令，兼有勇悍与经学修养。汉成帝是张禹的学生，长期信任张禹；事件中先震怒，后接受劝说。张禹为经学家、帝师、前丞相、安昌侯，退休后仍获礼遇并参与政事，不能只用奸臣标签代替背景。辛庆忌当时为左将军，免冠解印绶、以死争辩，是推动结局改变的关键人物。",
+        "confirmed": true,
+        "method": "user_notes",
+        "sourceType": "historical_material"
+      },
+      {
+        "id": "82b3413944d7",
+        "version": 1,
+        "title": "张禹传 · 背景与时间边界",
+        "citation": "用户整理《汉书》卷八十一《张禹传》 https://zh.wikisource.org/zh-hans/漢書/卷081",
+        "location": "用户提供的整理材料，非完整原文转录",
+        "text": "张禹有经学专长，曾向太子教授《论语》；显贵后积累田产、生活奢华。皇帝在重要政事上征询其意见。面对灾异和王氏专权疑虑，他顾虑自身及子孙，作出有利于消解皇帝疑虑的答复。这些是不同时间的背景材料，不等于折槛当天朱云提交的罪证清单，不得将其直接改写为当天已发生的证据收集。",
+        "confirmed": true,
+        "method": "user_notes",
+        "sourceType": "historical_material"
+      },
+      {
+        "id": "33c261c7e9e7",
+        "version": 1,
+        "title": "互动创作意图 · 非史料",
+        "citation": "用户创作设想",
+        "location": "用户提供的整理材料，非完整原文转录",
+        "text": "可让观众以劝谏者身份，根据先前对话尝试劝服成帝。成功分支为释放朱云；未成功劝服分支提供反馈，只表示此次互动未达目标，不声称历史上朱云被处死。收集张禹背景线索触发进谏属于画作之外的虚构组织方式，不能表述为史料已载的当天流程。",
+        "confirmed": true,
+        "method": "user_notes",
+        "sourceType": "creative_intent"
+      }
+    ],
+    "characters": [
+      {
+        "id": "99b162584399",
+        "name": "朱云",
+        "identity": "直谏者，曾任槐里令",
+        "relationships": "与成帝公开争论，指责张禹",
+        "knowledge": "仅限经审核的当时身份、已发生事件与可见行动，不知道未来结局或他人内心",
+        "evidence": "用户提供人物笔记，需对照《朱云传》《张禹传》",
+        "confirmed": true
+      },
+      {
+        "id": "e39e365c37eb",
+        "name": "汉成帝",
+        "identity": "西汉皇帝，张禹的学生",
+        "relationships": "信任帝师，后接受辛庆忌劝谏",
+        "knowledge": "仅限经审核的当时身份、已发生事件与可见行动，不知道未来结局或他人内心",
+        "evidence": "用户提供人物笔记，需对照《朱云传》《张禹传》",
+        "confirmed": true
+      },
+      {
+        "id": "64a83a74fe78",
+        "name": "张禹",
+        "identity": "经学家、帝师、前丞相、安昌侯",
+        "relationships": "成帝之师，朱云进谏所针对的人物",
+        "knowledge": "仅限经审核的当时身份、已发生事件与可见行动，不知道未来结局或他人内心",
+        "evidence": "用户提供人物笔记，需对照《朱云传》《张禹传》",
+        "confirmed": true
+      },
+      {
+        "id": "59921d0045bf",
+        "name": "辛庆忌",
+        "identity": "左将军",
+        "relationships": "为朱云冒死辩护，劝成帝容纳异议",
+        "knowledge": "仅限经审核的当时身份、已发生事件与可见行动，不知道未来结局或他人内心",
+        "evidence": "用户提供人物笔记，需对照《朱云传》《张禹传》",
+        "confirmed": true
+      }
+    ],
+    "annotations": [],
+    "image": "/api/images/example-zhekan.png",
+    "intent": {
+      "theme": "直谏与容纳异议",
+      "audience": "博物馆普通观众",
+      "tone": "克制、生动",
+      "goal": "围绕折槛与辛庆忌劝谏构建可追溯叙事；为后续观众劝谏互动保留线索",
+      "fixed": "汉代事件与宋代绘画分开；朱云攀栏导致折断；辛庆忌劝谏后朱云获救；旧栏修补而非替换",
+      "allowed": "过渡动作、未直接记载的对白与互动反馈均标为虚构；背景线索不得混入当天确证事件",
+      "forbidden": "不得把门槛或砸殿当作折槛；不得拼接张禹不同时间事迹为当日罪证；不得把互动失败写成真实历史结局"
+    },
+    "scenes": [
+      {
+        "title": "折槛与劝谏",
+        "goal": "呈现朱云当众指斥张禹、成帝震怒命御史带离、朱云攀殿槛致槛折，以及辛庆忌免冠解印绶、叩头流血劝谏后成帝息怒、朱云获全；结尾以修栏时保留旧栏表彰直臣收束。有据内容：朱云攀殿槛而槛折、辛庆忌劝谏、朱云获全、旧栏修补而非替换；张禹不同时间的背景材料不并入当日罪证。虚构内容：仅补过渡动作与未记载对白，不改变历史结局。",
+        "characterIds": [
+          "99b162584399",
+          "e39e365c37eb",
+          "64a83a74fe78",
+          "59921d0045bf"
+        ],
+        "connection": "延续项目主题“直谏与容纳异议”：以宋人《折槛图》所绘汉代故事为视觉线索，但明确宋代绘画与汉代事件分开；画面人物身份与局部框定尚待实测校准，相关对应属于待核推断，不作为已确认史实。",
+        "id": "28e1d77b5696",
+        "units": [
+          {
+            "text": "朱云在公卿面前指斥大臣尸位素餐，请求赐尚方斩马剑处死佞臣，皇帝追问时点名安昌侯张禹；成帝以当众侮辱帝师为由震怒，命御史将朱云带走。",
+            "kind": "event",
+            "category": "supported",
+            "speakerId": "",
+            "rationale": "",
+            "references": [
+              {
+                "sourceId": "71c5aaf983e3",
+                "sourceVersion": 1,
+                "annotationId": "",
+                "quote": "朱云在公卿面前指责大臣不能匡正君主、造福百姓，只是尸位素餐。他请求赐尚方斩马剑，处死佞臣，皇帝追问时点名安昌侯张禹。成帝以当众侮辱帝师为由震怒，命御史将朱云带走。"
+              }
+            ],
+            "id": "a7ee675501ba",
+            "status": "pending",
+            "locked": false
+          },
+          {
+            "text": "朱云被带离时攀住殿前栏杆，栏杆折断；传文记作“云攀殿槛，槛折”，不是主动砸殿或折门槛。",
+            "kind": "action",
+            "category": "supported",
+            "speakerId": "",
+            "rationale": "",
+            "references": [
+              {
+                "sourceId": "71c5aaf983e3",
+                "sourceVersion": 1,
+                "annotationId": "",
+                "quote": "朱云被带离时攀住殿前栏杆，栏杆折断，并非主动砸毁宫殿或折断门槛。"
+              },
+              {
+                "sourceId": "71c5aaf983e3",
+                "sourceVersion": 1,
+                "annotationId": "",
+                "quote": "云攀殿槛，槛折。"
+              }
+            ],
+            "id": "b110a5e07c0a",
+            "status": "pending",
+            "locked": false
+          },
+          {
+            "text": "殿中短暂静默，辛庆忌向前一步。",
+            "kind": "action",
+            "category": "fiction",
+            "speakerId": "",
+            "rationale": "仅补未记载的过渡动作，不改变后续劝谏与结局。",
+            "references": [],
+            "id": "ac97c6d33a94",
+            "status": "pending",
+            "locked": false
+          },
+          {
+            "text": "左将军辛庆忌免冠解印绶，叩头流血，请求成帝容纳逆耳之言，说：“使其言是，不可诛；其言非，固当容之。”",
+            "kind": "dialogue",
+            "category": "supported",
+            "speakerId": "59921d0045bf",
+            "rationale": "",
+            "references": [
+              {
+                "sourceId": "71c5aaf983e3",
+                "sourceVersion": 1,
+                "annotationId": "",
+                "quote": "左将军辛庆忌免冠解印绶，叩头流血，请求容纳逆耳之言：“使其言是，不可诛；其言非，固当容之。”"
+              }
+            ],
+            "id": "8f10b0ec59eb",
+            "status": "pending",
+            "locked": false
+          },
+          {
+            "text": "成帝息怒，朱云得以保全；后来修栏时，皇帝要求不要换掉旧栏，而应修补旧栏，用来表彰直臣。",
+            "kind": "event",
+            "category": "supported",
+            "speakerId": "",
+            "rationale": "",
+            "references": [
+              {
+                "sourceId": "71c5aaf983e3",
+                "sourceVersion": 1,
+                "annotationId": "",
+                "quote": "成帝息怒，朱云得以保全。"
+              },
+              {
+                "sourceId": "71c5aaf983e3",
+                "sourceVersion": 1,
+                "annotationId": "",
+                "quote": "后来修栏时皇帝要求不要换掉，而应修补旧栏，用来表彰直臣。"
+              }
+            ],
+            "id": "9c378cc1a701",
+            "status": "pending",
+            "locked": false
+          },
+          {
+            "text": "画面可作为“折槛”故事的视觉线索，但用户提供的是局部截图，人物身份与局部框定尚待实测校准；不能把宋人《折槛图》的画面直接当作汉代事件当日的记录。",
+            "kind": "clue",
+            "category": "inference",
+            "speakerId": "",
+            "rationale": "由画作档案“故事发生在汉代，画作属于宋代绘画”及“截图为局部图像”推得；对应关系未实测，不作为已确认史实。",
+            "references": [
+              {
+                "sourceId": "a2382d1ac361",
+                "sourceVersion": 1,
+                "annotationId": "",
+                "quote": "故事发生在汉代，画作属于宋代绘画。"
+              },
+              {
+                "sourceId": "a2382d1ac361",
+                "sourceVersion": 1,
+                "annotationId": "",
+                "quote": "用户提供的截图为局部图像，不是完整画作。"
+              }
+            ],
+            "id": "f4ec1aa8b68b",
+            "status": "pending",
+            "locked": false
+          }
+        ]
+      }
+    ],
+    "outlineConfirmed": true,
+    "checks": [
+      {
+        "message": "结构一致性：project.sceneCount 为 1，scenes 长度亦为 1；场景 28e1d77b5696 下 6 个单元 id 唯一、无重复，characterIds 均为已定义人物。通过。",
+        "id": "4bc91e422444",
+        "resolved": false
+      },
+      {
+        "message": "引用可核性：a7ee675501ba、b110a5e07c0a、8f10b0ec59eb、9c378cc1a701、f4ec1aa8b68b 所填 sourceId/sourceVersion 均存在于 sources，且 quote 可在对应 text 中逐字定位（含“云攀殿槛，槛折。”“使其言是，不可诛；其言非，固当容之。”），未发现编造引文或错误 ID。通过。",
+        "id": "b0670d2b3205",
+        "resolved": false
+      },
+      {
+        "message": "引用层级提示：全部 quote 均取自用户整理材料（source 标注为非完整原文转录），71c5aaf983e3 明示“标出的短引文需对照原文版本”。建议发布前对“云攀殿槛，槛折。”与“使其言是，不可诛；其言非，固当容之。”做原文版本复核，或在文案中保留待核标注。",
+        "id": "4405db10b02a",
+        "resolved": false
+      },
+      {
+        "message": "事实与虚构分离：ac97c6d33a94 标为 fiction、无 references、rationale 说明“仅补未记载的过渡动作，不改变后续劝谏与结局”，未影响 supported 单元的历史结局。通过。",
+        "id": "30cf74f41fce",
+        "resolved": false
+      },
+      {
+        "message": "时间边界问题：9c378cc1a701 将“成帝息怒、朱云获全”（当日结果）与“后来修栏、修补旧栏”（事后处置）合并为一个 supported 单元，跨两个时间点。建议拆为两个单元，以免与 intent.fixed 中“汉代事件与宋代绘画分开”“旧栏修补而非替换”的时间层次混淆。",
+        "id": "92b72de73f79",
+        "resolved": false
+      },
+      {
+        "message": "概述差异未落位：a2382d1ac361 提示馆方概述把旧栏处理概括为“保留原状”，而《朱云传》作“勿易、因而辑之”，要求不把差异抹平。当前 project.fixed 与 9c378cc1a701 统一写作“不要换掉、应修补”，项目中无任何单元记录该措辞差异。建议补一条 inference 单元说明两者差别，不改动既有 supported 表述。",
+        "id": "085720eefd6f",
+        "resolved": false
+      },
+      {
+        "message": "supported 单元混入否定性论断：b110a5e07c0a 文本含“不是主动砸殿或折门槛”，属对常见误读的排除而非事件本身。建议将否定表述移入独立 inference 或备注单元，使该 supported 单元仅保留“被带离时攀槛—槛折”的可核事实。",
+        "id": "706d7d4b2e11",
+        "resolved": false
+      },
+      {
+        "message": "粒度偏粗：a7ee675501ba 在单条内串联指斥尸位素餐、请尚方斩马剑、点名张禹、成帝震怒、命御史带离等多个动作。若后续需与画面人物动作挂接，建议拆分（不改变 supported 属性）。",
+        "id": "a16a269f1483",
+        "resolved": false
+      },
+      {
+        "message": "动作与对白同置：8f10b0ec59eb 归为 dialogue，但文本包含“免冠解印绶、叩头流血”的动作描述。若需与画面动作逐项对应，建议拆为 action 与 dialogue 两个 supported 单元，speakerId 仍为 59921d0045bf。",
+        "id": "d9d70e1bcae4",
+        "resolved": false
+      },
+      {
+        "message": "画面边界：observations 与 annotations 均为空，无任何单元引用 annotationId，符合“无实测标注不得虚构对应”的要求；f4ec1aa8b68b 仅据来源推得“宋画非汉代现场记录”并自标待实测校准，与 imageNote（局部截图、含浏览器控件）一致。通过。",
+        "id": "8e1a910f61f8",
+        "resolved": false
+      },
+      {
+        "message": "张禹背景未被误用：82b3413944d7 所载田产奢华、灾异答复等内容未被写入任何当日罪证单元，符合 forbidden。该来源目前在项目内完全未被引用，如需体现“帝师、前丞相”身份，可在人物设定层引用，无需进入当日事件单元。",
+        "id": "7915c5e56e7b",
+        "resolved": false
+      },
+      {
+        "message": "禁项复核：未出现把门槛或砸殿当作折槛；未把张禹不同时间事迹拼接为当日罪证；未把观众互动失败写成真实历史结局。project.fixed 四条与现有单元内容一致。通过。",
+        "id": "0a992178fb97",
+        "resolved": false
+      }
+    ],
+    "painting": {
+      "name": "宋人《折槛图》轴",
+      "artist": "佚名，无作者款印",
+      "paintingPeriod": "宋代",
+      "storyPeriod": "西汉成帝时期，事件段未明确记年",
+      "material": "绢本设色",
+      "dimensions": "173.9 × 101.8 厘米",
+      "collection": "台北故宫博物院",
+      "catalog": "https://digitalarchive.npm.gov.tw/Collection/Detail/38?dep=P",
+      "imageNote": "用户提供的画作局部截图，含浏览器控件，不代表完整立轴。人物框与身份均需实测及校准。"
+    }
+  }
+}

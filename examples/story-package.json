@@ -1,0 +1,161 @@
+{
+  "schemaVersion": "1.0",
+  "state": "draft",
+  "issues": [
+    "1fc126a0df95: 尚未批准",
+    "b7f5f836b820: 尚未批准",
+    "cf011aab5bee: 尚未批准",
+    "人物尚未确认",
+    "大纲尚未确认",
+    "请运行一致性检查并确认结果"
+  ],
+  "project": {
+    "id": "56916b4766ab",
+    "version": 1,
+    "title": "听乐片段 · 人工编写演示草稿",
+    "sources": [
+      {
+        "id": "54c44202dd00",
+        "version": 1,
+        "title": "故宫藏品说明 · 人工整理的阅读笔记（非原文）",
+        "citation": "故宫博物院《顾闳中韩熙载夜宴图卷》 https://www.dpm.org.cn/collection/paint/228200.html",
+        "location": "全图五段及首段听乐的介绍；请对照馆方网页复核",
+        "text": "馆方介绍将画卷分成听乐、观舞、暂歇、清吹、散宴五段。听乐段中，韩熙载与郎粲同坐床榻，聆听李家明之妹演奏琵琶；李家明在妹妹旁边。此笔记仅概括馆方描述，不包含现场对白或人物动机的历史记录。"
+      }
+    ],
+    "characters": [
+      {
+        "id": "b78a46a84019",
+        "name": "韩熙载",
+        "identity": "宴会主人",
+        "relationships": "参考所附阅读笔记，需人工复核",
+        "knowledge": "仅知道本片段现场可见的宴乐；不预设他人内心",
+        "evidence": "54c44202dd00，馆方藏品说明阅读笔记",
+        "confirmed": false
+      },
+      {
+        "id": "ff5d40e2d686",
+        "name": "郎粲",
+        "identity": "听乐宾客",
+        "relationships": "参考所附阅读笔记，需人工复核",
+        "knowledge": "仅知道本片段现场可见的宴乐；不预设他人内心",
+        "evidence": "54c44202dd00，馆方藏品说明阅读笔记",
+        "confirmed": false
+      },
+      {
+        "id": "d5e79ea29bbd",
+        "name": "琵琶演奏者",
+        "identity": "馆方说明中的李家明之妹",
+        "relationships": "参考所附阅读笔记，需人工复核",
+        "knowledge": "仅知道本片段现场可见的宴乐；不预设他人内心",
+        "evidence": "54c44202dd00，馆方藏品说明阅读笔记",
+        "confirmed": false
+      },
+      {
+        "id": "3472c9506aeb",
+        "name": "李家明",
+        "identity": "演奏者之兄",
+        "relationships": "参考所附阅读笔记，需人工复核",
+        "knowledge": "仅知道本片段现场可见的宴乐；不预设他人内心",
+        "evidence": "54c44202dd00，馆方藏品说明阅读笔记",
+        "confirmed": false
+      }
+    ],
+    "annotations": [],
+    "image": "",
+    "intent": {
+      "theme": "同一场音乐中的不同注意",
+      "audience": "博物馆普通观众",
+      "tone": "克制、生动",
+      "goal": "通过宴乐片段探索人物关系，明确区分画面描述和创作对白",
+      "fixed": "不改变人工确认的画面人物与活动",
+      "allowed": "对白、过渡动作",
+      "forbidden": "不得把现场对白、心理和动机描述为确证历史"
+    },
+    "scenes": [
+      {
+        "id": "f6cac3bbdd3a",
+        "title": "落座",
+        "goal": "引入听乐情境",
+        "connection": "同一听乐片段中的连续叙事节拍，并非画卷原有三个段落",
+        "characterIds": [
+          "b78a46a84019",
+          "ff5d40e2d686",
+          "d5e79ea29bbd",
+          "3472c9506aeb"
+        ],
+        "units": [
+          {
+            "id": "1fc126a0df95",
+            "text": "韩熙载与郎粲同坐床榻，聆听琵琶演奏。",
+            "kind": "action",
+            "category": "supported",
+            "speakerId": "",
+            "rationale": "人工编写演示内容，非模型生成；对白与过渡动作为虚构。",
+            "references": [
+              {
+                "sourceId": "54c44202dd00",
+                "sourceVersion": 1,
+                "quote": "听乐段中，韩熙载与郎粲同坐床榻，聆听李家明之妹演奏琵琶；李家明在妹妹旁边。"
+              }
+            ],
+            "status": "pending",
+            "locked": false
+          }
+        ]
+      },
+      {
+        "id": "eecab495c856",
+        "title": "弦间",
+        "goal": "以虚构对白衔接人物注意",
+        "connection": "同一听乐片段中的连续叙事节拍，并非画卷原有三个段落",
+        "characterIds": [
+          "b78a46a84019",
+          "ff5d40e2d686",
+          "d5e79ea29bbd",
+          "3472c9506aeb"
+        ],
+        "units": [
+          {
+            "id": "b7f5f836b820",
+            "text": "郎粲轻声说道：“且听这一段。”",
+            "kind": "dialogue",
+            "category": "fiction",
+            "speakerId": "ff5d40e2d686",
+            "rationale": "人工编写演示内容，非模型生成；对白与过渡动作为虚构。",
+            "references": [],
+            "status": "pending",
+            "locked": false
+          }
+        ]
+      },
+      {
+        "id": "6b0ed86d4c88",
+        "title": "余音",
+        "goal": "结束本片段并留下可探索线索",
+        "connection": "同一听乐片段中的连续叙事节拍，并非画卷原有三个段落",
+        "characterIds": [
+          "b78a46a84019",
+          "ff5d40e2d686",
+          "d5e79ea29bbd",
+          "3472c9506aeb"
+        ],
+        "units": [
+          {
+            "id": "cf011aab5bee",
+            "text": "演奏者暂缓手势，席间的谈话也随之放轻。",
+            "kind": "action",
+            "category": "fiction",
+            "speakerId": "",
+            "rationale": "人工编写演示内容，非模型生成；对白与过渡动作为虚构。",
+            "references": [],
+            "status": "pending",
+            "locked": false
+          }
+        ]
+      }
+    ],
+    "outlineConfirmed": false,
+    "checks": []
+  }
+}
