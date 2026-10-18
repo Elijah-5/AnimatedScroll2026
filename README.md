@@ -7,26 +7,28 @@ Vue 3 + TypeScript + FastAPI + SQLite 的中文本地研究原型。覆盖资料
 需要 Python 3.10+、Node 20.19+ 或 22.12+。
 
 ```sh
-cd /Users/linjingyang/Downloads/AnimatedScroll-HXZ-Catchup/Projects/creation-agent-demo
+cd AnimatedScroll2026
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
 npm install
-cp .env.example .env
 ```
 
-在本机编辑 `.env`，填写 `AIHUBMIX_API_KEY`。密钥只供后端读取，不要发到聊天或放进前端。以下命令在 zsh/bash 中加载配置并启动后端：
+在启动后端的终端中自行设置环境变量。下面仅为占位示例，请在本机替换，**不要把实际 API Key 提交到 GitHub 或发送到聊天**：
 
 ```sh
-set -a
-source .env
-set +a
+export AIHUBMIX_API_KEY="YOUR_API_KEY_HERE"
+export AIHUBMIX_BASE_URL="https://aihubmix.com/v1"
+export AIHUBMIX_MODEL="deepseek-v4.1-flash-1017"
+export AIHUBMIX_VISION_MODEL="gpt-4o"
 .venv/bin/python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000
 ```
+
+密钥仅由后端读取，前端不接收密钥。也可参考 `.env.example` 在本机创建 `.env`；它已被 `.gitignore` 排除。仓库不包含可用凭据，克隆后须配置自己的 Key。
 
 另一个终端：
 
 ```sh
-cd /Users/linjingyang/Downloads/AnimatedScroll-HXZ-Catchup/Projects/creation-agent-demo
+cd AnimatedScroll2026
 npm run dev -- --port 5173
 ```
 
