@@ -1,0 +1,28 @@
+{
+  "projects": [
+    {
+      "id": "52c2c5dab35e",
+      "title": "步辇图",
+      "version": 15
+    },
+    {
+      "id": "85e0f870d8bc",
+      "title": "步辇图(2)",
+      "version": 77
+    },
+    {
+      "id": "f417cabb0972",
+      "title": "折槛图",
+      "version": 71
+    }
+  ],
+  "envUnchanged": true,
+  "changedTablesSinceImplementationBackup": [
+    "experience_turns"
+  ],
+  "changedTablesSinceRolloutBackup": [],
+  "newLegacyTurns": 3,
+  "originalRowsPreserved": true,
+  "modelCallsByAcceptance": "local_fakes_only",
+  "mysqlAcceptance": "not_connected"
+}

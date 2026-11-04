@@ -53,6 +53,36 @@ class MaterialInputs(BaseModel):
     narrative: str = ''
     version: int = Field(default=1,ge=1)
 
+class PaintingInfo(BaseModel):
+    name: str = Field(default='',max_length=200)
+    artist: str = ''
+    period: str = ''
+    storyPeriod: str = ''
+    medium: str = ''
+    dimensions: str = ''
+    collection: str = ''
+    accession: str = ''
+    description: str = ''
+
+class CatalogEvidence(BaseModel):
+    sourceId: str = ''
+    sourceVersion: int = Field(default=1,ge=1)
+    quote: str = ''
+
+class HistoricalEvent(Entity):
+    title: str = Field(min_length=1,max_length=200)
+    time: str = ''
+    description: str = ''
+    evidence: CatalogEvidence = Field(default_factory=CatalogEvidence)
+
+class DirectionalRelation(BaseModel):
+    fromId: str
+    toId: str
+    label: str = Field(min_length=1,max_length=100)
+    sourceId: str
+    sourceVersion: int = Field(ge=1)
+    quote: str = Field(min_length=1)
+
 class Project(Entity):
     model_config = ConfigDict(extra='allow')
     version: int = Field(ge=1)

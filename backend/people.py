@@ -1,6 +1,6 @@
 from .domain import uid
 
-PROFILE_FIELDS=('name','identity','biography','relationships','summary','mentions','namingOrigin','knowledge','evidence')
+PROFILE_FIELDS=('name','identity','biography','relationships','summary','mentions','namingOrigin','knowledge','evidence','roleType','depictionScope','visualHints','sourceName','creativeNaming','identityOptions')
 
 def profile(c):
     if c.get('namingOrigin')=='creator':return '创作者命名，资料未提供历史身份／经历。'
@@ -11,11 +11,11 @@ def invalidate(old,new):
     before={c['id']:c for c in old['characters']}
     changed={c['id'] for c in new['characters'] if c['id'] in before and any(before[c['id']].get(k)!=c.get(k) for k in PROFILE_FIELDS)}
     for c in new['characters']:
-        if c['id'] in changed:c['confirmed']=False
+        if c['id'] in changed:c['basisChanged']=True
     old_boxes={a['id']:a for a in old['annotations']}
     for a in new['annotations']:
         prior=old_boxes.get(a['id'],{})
-        if a.get('characterId') in changed or (a['id'] in old_boxes and prior.get('characterId','')!=a.get('characterId','')):
+        if a['id'] in old_boxes and prior.get('characterId','')!=a.get('characterId',''):
             a['identityConfirmed']=False;a['needsReview']=True
             for m in new.get('matches',[]):
                 if m.get('annotationId')==a['id']:m['confirmed']=False;m['stale']=True
@@ -62,7 +62,7 @@ def install(app,get,save):
         if not c:
             c=dict(id=uid(),name=name,identity='',biography='',relationships='',knowledge='',evidence='创作者命名，资料未提供历史身份／经历',summary='创作者命名，资料未提供历史身份／经历。',mentions=[],namingOrigin='creator',confirmed=False)
             p['characters'].append(c)
-        a.update(characterId=c['id'],identityConfirmed=False,needsReview=True)
+        a.update(characterId=c['id'],identityConfirmed=False,identityManual=True,needsReview=True)
         for m in p['matches']:
             if m.get('annotationId')==aid:m.update(characterId=c['id'],confirmed=False,manual=True,stale=False)
         p['checks']=[];p['outlineConfirmed']=False

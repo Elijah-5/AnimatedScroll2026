@@ -17,11 +17,13 @@ def citation_errors(unit, project):
         errors.append('未提供已有历史叙事，新增故事事件须标为虚构；背景事实请单独表达')
     refs = unit.get('references', [])
     for ref in refs:
-        source = next((s for s in project['sources'] if s['id'] == ref.get('sourceId')), None)
+        source = next((s for s in project['sources'] if s['id']==ref.get('sourceId') and s.get('version')==ref.get('sourceVersion')),None) or next((s for s in project['sources'] if s['id']==ref.get('sourceId')),None)
         annotation = next((a for a in project['annotations'] if a['id'] == ref.get('annotationId')), None)
         if source:
             if source.get('sourceType') == 'creative_intent':
                 errors.append('创作设想不能作为历史依据')
+            if source.get('sourceType') == 'derived_summary':
+                errors.append('文献摘要不是原始依据，请引用PDF原文页')
             if source.get('confirmed') is False:
                 errors.append('资料提取结果尚未人工确认')
             if not ref.get('quote') or ref['quote'] not in source['text'] or ref.get('sourceVersion') != source['version']:
@@ -46,8 +48,8 @@ def reconcile(old, new):
     from .materials import synchronize
     material_changed=synchronize(old,new)
     if material_changed:
-        for match in new.get('matches',[]):match['confirmed']=False;match['stale']=True
-        for a in new['annotations']:a['identityConfirmed']=False;a['needsReview']=True
+        for match in new.get('matches',[]):match['basisChanged']=True
+        for a in new['annotations']:a['basisChanged']=True
     from .people import invalidate
     invalidate(old,new)
     prior_annotations={a['id']:a for a in old['annotations']}
@@ -56,11 +58,11 @@ def reconcile(old, new):
     new['observations']=[o for o in new.get('observations',[]) if o.get('annotationId') in present]
     new['matches']=[m for m in new.get('matches',[]) if m.get('annotationId') in present]
     for a in new['annotations']:
-        if a['id'] in moved:a['confirmed']=False;a['identityConfirmed']=False;a['needsReview']=True
+        if a['id'] in moved:a['basisChanged']=True;a['geometryManual']=True
     for obs in new.get('observations',[]):
-        if obs.get('annotationId') in moved:obs['confirmed']=False;obs['stale']=True
+        if obs.get('annotationId') in moved:obs['basisChanged']=True
     for match in new.get('matches',[]):
-        if match.get('annotationId') in moved:match['confirmed']=False;match['stale']=True
+        if match.get('annotationId') in moved:match['basisChanged']=True
     old_sources = {s['id']: s for s in old['sources']}
     for source in new['sources']:
         previous = old_sources.get(source['id'])

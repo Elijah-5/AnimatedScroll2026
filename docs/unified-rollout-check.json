@@ -1,0 +1,28 @@
+{
+  "projects": [
+    {
+      "projectId": "f417cabb0972",
+      "beforeVersion": 70,
+      "afterVersion": 71,
+      "publishedUnchanged": true,
+      "unifiedDraft": true
+    },
+    {
+      "projectId": "52c2c5dab35e",
+      "beforeVersion": 14,
+      "afterVersion": 15,
+      "publishedUnchanged": true,
+      "unifiedDraft": true
+    },
+    {
+      "projectId": "85e0f870d8bc",
+      "beforeVersion": 76,
+      "afterVersion": 77,
+      "publishedUnchanged": true,
+      "unifiedDraft": true
+    }
+  ],
+  "publishedHistoricalTablesUnchanged": true,
+  "audienceStateAndJobsUnchanged": true,
+  "credentialsUnchanged": true
+}

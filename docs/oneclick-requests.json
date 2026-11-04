@@ -1,0 +1,1868 @@
+{
+  "limit": 60,
+  "requests": [
+    {
+      "id": 1,
+      "time": 1793559773.33377,
+      "stage": "run",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 39537,
+      "outputBound": 12000,
+      "reservedUsd": 0.0437685,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 23.867,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 12619,
+        "completion_tokens": 3216,
+        "total_tokens": 15835,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.0127415,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 2,
+      "time": 1793559808.203309,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 7719,
+      "outputBound": 6000,
+      "reservedUsd": 0.0158595,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 1.272,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 1489,
+        "completion_tokens": 41,
+        "total_tokens": 1530,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.0008265,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 3,
+      "time": 1793559809.485058,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 7752,
+      "outputBound": 6000,
+      "reservedUsd": 0.015876,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 1.872,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 1497,
+        "completion_tokens": 118,
+        "total_tokens": 1615,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.0009845,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 4,
+      "time": 1793559811.3666198,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 7743,
+      "outputBound": 6000,
+      "reservedUsd": 0.0158715,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 2.088,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 1493,
+        "completion_tokens": 123,
+        "total_tokens": 1616,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.0009925,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 5,
+      "time": 1793559813.466162,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 7761,
+      "outputBound": 6000,
+      "reservedUsd": 0.0158805,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 2.378,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 1497,
+        "completion_tokens": 150,
+        "total_tokens": 1647,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.0010485,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 6,
+      "time": 1793559815.856791,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 7740,
+      "outputBound": 6000,
+      "reservedUsd": 0.01587,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 1.621,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 1492,
+        "completion_tokens": 136,
+        "total_tokens": 1628,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.001018,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 7,
+      "time": 1793559817.4879842,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 7776,
+      "outputBound": 6000,
+      "reservedUsd": 0.015888,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 2.149,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 1500,
+        "completion_tokens": 140,
+        "total_tokens": 1640,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.00103,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 8,
+      "time": 1793559819.646323,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 7758,
+      "outputBound": 6000,
+      "reservedUsd": 0.015879,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 2.375,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 1495,
+        "completion_tokens": 111,
+        "total_tokens": 1606,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.0009695,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 9,
+      "time": 1793559822.032453,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 7785,
+      "outputBound": 6000,
+      "reservedUsd": 0.0158925,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 1.601,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 1500,
+        "completion_tokens": 87,
+        "total_tokens": 1587,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.000924,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 10,
+      "time": 1793559823.6433878,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "qwen3.7-plus",
+      "inputBound": 7719,
+      "outputBound": 6000,
+      "reservedUsd": 0.03489090000000001,
+      "rates": [
+        1.1,
+        4.4
+      ],
+      "elapsedSeconds": 9.392,
+      "model": "qwen3.7-plus",
+      "usage": {
+        "prompt_tokens": 1463,
+        "completion_tokens": 448,
+        "total_tokens": 1911,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 372
+        }
+      },
+      "accountedUsd": 0.0035805000000000003,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 11,
+      "time": 1793559833.047009,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "qwen3.7-plus",
+      "inputBound": 7752,
+      "outputBound": 6000,
+      "reservedUsd": 0.034927200000000005,
+      "rates": [
+        1.1,
+        4.4
+      ],
+      "elapsedSeconds": 17.892,
+      "model": "qwen3.7-plus",
+      "usage": {
+        "prompt_tokens": 1470,
+        "completion_tokens": 1049,
+        "total_tokens": 2519,
+        "prompt_tokens_details": {
+          "cached_tokens": 1152
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 854
+        }
+      },
+      "accountedUsd": 0.0062326000000000005,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 12,
+      "time": 1793559850.9482539,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "qwen3.7-plus",
+      "inputBound": 7743,
+      "outputBound": 6000,
+      "reservedUsd": 0.034917300000000005,
+      "rates": [
+        1.1,
+        4.4
+      ],
+      "elapsedSeconds": 23.986,
+      "model": "qwen3.7-plus",
+      "usage": {
+        "prompt_tokens": 1467,
+        "completion_tokens": 1339,
+        "total_tokens": 2806,
+        "prompt_tokens_details": {
+          "cached_tokens": 1152
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 1230
+        }
+      },
+      "accountedUsd": 0.0075053,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 13,
+      "time": 1793559874.959276,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "qwen3.7-plus",
+      "inputBound": 7761,
+      "outputBound": 6000,
+      "reservedUsd": 0.034937100000000006,
+      "rates": [
+        1.1,
+        4.4
+      ],
+      "elapsedSeconds": 20.859,
+      "model": "qwen3.7-plus",
+      "usage": {
+        "prompt_tokens": 1471,
+        "completion_tokens": 1074,
+        "total_tokens": 2545,
+        "prompt_tokens_details": {
+          "cached_tokens": 1152
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 935
+        }
+      },
+      "accountedUsd": 0.006343700000000001,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 14,
+      "time": 1793559895.828013,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "qwen3.7-plus",
+      "inputBound": 7740,
+      "outputBound": 6000,
+      "reservedUsd": 0.034914,
+      "rates": [
+        1.1,
+        4.4
+      ],
+      "elapsedSeconds": 30.822,
+      "model": "qwen3.7-plus",
+      "usage": {
+        "prompt_tokens": 1466,
+        "completion_tokens": 1825,
+        "total_tokens": 3291,
+        "prompt_tokens_details": {
+          "cached_tokens": 1152
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 1702
+        }
+      },
+      "accountedUsd": 0.009642600000000001,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 15,
+      "time": 1793559926.66146,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "qwen3.7-plus",
+      "inputBound": 7776,
+      "outputBound": 6000,
+      "reservedUsd": 0.03495360000000001,
+      "rates": [
+        1.1,
+        4.4
+      ],
+      "elapsedSeconds": 9.616,
+      "model": "qwen3.7-plus",
+      "usage": {
+        "prompt_tokens": 1473,
+        "completion_tokens": 538,
+        "total_tokens": 2011,
+        "prompt_tokens_details": {
+          "cached_tokens": 1152
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 432
+        }
+      },
+      "accountedUsd": 0.003987500000000001,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 16,
+      "time": 1793559936.288552,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "qwen3.7-plus",
+      "inputBound": 7758,
+      "outputBound": 6000,
+      "reservedUsd": 0.0349338,
+      "rates": [
+        1.1,
+        4.4
+      ],
+      "elapsedSeconds": 8.937,
+      "model": "qwen3.7-plus",
+      "usage": {
+        "prompt_tokens": 1469,
+        "completion_tokens": 489,
+        "total_tokens": 1958,
+        "prompt_tokens_details": {
+          "cached_tokens": 1152
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 394
+        }
+      },
+      "accountedUsd": 0.0037675000000000004,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 17,
+      "time": 1793559945.23953,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "qwen3.7-plus",
+      "inputBound": 7785,
+      "outputBound": 6000,
+      "reservedUsd": 0.0349635,
+      "rates": [
+        1.1,
+        4.4
+      ],
+      "elapsedSeconds": 16.994,
+      "model": "qwen3.7-plus",
+      "usage": {
+        "prompt_tokens": 1475,
+        "completion_tokens": 944,
+        "total_tokens": 2419,
+        "prompt_tokens_details": {
+          "cached_tokens": 1152
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 792
+        }
+      },
+      "accountedUsd": 0.0057761,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 18,
+      "time": 1793560010.495439,
+      "stage": "intent",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 887373,
+      "outputBound": 6000,
+      "reservedUsd": 0.4556865,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 12.037,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 298427,
+        "completion_tokens": 489,
+        "total_tokens": 298916,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.1501915,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 19,
+      "time": 1793560053.384793,
+      "stage": "run",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 791398,
+      "outputBound": 24000,
+      "reservedUsd": 0.443699,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 16.813,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 271374,
+        "completion_tokens": 1061,
+        "total_tokens": 272435,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.137809,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 20,
+      "time": 1793560097.9070091,
+      "stage": "run",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 773520,
+      "outputBound": 12000,
+      "reservedUsd": 0.41076,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 11.721,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 264923,
+        "completion_tokens": 474,
+        "total_tokens": 265397,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.1334095,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 21,
+      "time": 1793560111.475225,
+      "stage": "run",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 773595,
+      "outputBound": 12000,
+      "reservedUsd": 0.4107975,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 11.765,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 264900,
+        "completion_tokens": 802,
+        "total_tokens": 265702,
+        "prompt_tokens_details": {
+          "cached_tokens": 263808
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.134054,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 22,
+      "time": 1793560407.323116,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 7719,
+      "outputBound": 6000,
+      "reservedUsd": 0.0158595,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 1.292,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 1489,
+        "completion_tokens": 44,
+        "total_tokens": 1533,
+        "prompt_tokens_details": {
+          "cached_tokens": 1408
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.0008325,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 23,
+      "time": 1793560408.629395,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 7752,
+      "outputBound": 6000,
+      "reservedUsd": 0.015876,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 2.061,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 1497,
+        "completion_tokens": 179,
+        "total_tokens": 1676,
+        "prompt_tokens_details": {
+          "cached_tokens": 1408
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.0011065,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 24,
+      "time": 1793560410.702442,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 7743,
+      "outputBound": 6000,
+      "reservedUsd": 0.0158715,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 1.946,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 1493,
+        "completion_tokens": 138,
+        "total_tokens": 1631,
+        "prompt_tokens_details": {
+          "cached_tokens": 1408
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.0010225,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 25,
+      "time": 1793560412.659075,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 7761,
+      "outputBound": 6000,
+      "reservedUsd": 0.0158805,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 1.848,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 1497,
+        "completion_tokens": 149,
+        "total_tokens": 1646,
+        "prompt_tokens_details": {
+          "cached_tokens": 1408
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.0010465,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 26,
+      "time": 1793560414.51774,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 7740,
+      "outputBound": 6000,
+      "reservedUsd": 0.01587,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 1.902,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 1492,
+        "completion_tokens": 144,
+        "total_tokens": 1636,
+        "prompt_tokens_details": {
+          "cached_tokens": 1408
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.001034,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 27,
+      "time": 1793560416.430706,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 7776,
+      "outputBound": 6000,
+      "reservedUsd": 0.015888,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 1.968,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 1500,
+        "completion_tokens": 107,
+        "total_tokens": 1607,
+        "prompt_tokens_details": {
+          "cached_tokens": 1408
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.000964,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 28,
+      "time": 1793560418.402168,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 8449,
+      "outputBound": 6000,
+      "reservedUsd": 0.0162245,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 1.348,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 1654,
+        "completion_tokens": 44,
+        "total_tokens": 1698,
+        "prompt_tokens_details": {
+          "cached_tokens": 1408
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.000915,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 29,
+      "time": 1793560419.761732,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 7758,
+      "outputBound": 6000,
+      "reservedUsd": 0.015879,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 2.613,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 1495,
+        "completion_tokens": 64,
+        "total_tokens": 1559,
+        "prompt_tokens_details": {
+          "cached_tokens": 1408
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.0008755,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 30,
+      "time": 1793560422.391127,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 7785,
+      "outputBound": 6000,
+      "reservedUsd": 0.0158925,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 2.325,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 1500,
+        "completion_tokens": 90,
+        "total_tokens": 1590,
+        "prompt_tokens_details": {
+          "cached_tokens": 1408
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.00093,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 31,
+      "time": 1793560424.726482,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "qwen3.7-plus",
+      "inputBound": 7719,
+      "outputBound": 6000,
+      "reservedUsd": 0.03489090000000001,
+      "rates": [
+        1.1,
+        4.4
+      ],
+      "elapsedSeconds": 11.283,
+      "model": "qwen3.7-plus",
+      "usage": {
+        "prompt_tokens": 1463,
+        "completion_tokens": 635,
+        "total_tokens": 2098,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 562
+        }
+      },
+      "accountedUsd": 0.0044033,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 32,
+      "time": 1793560436.020328,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "qwen3.7-plus",
+      "inputBound": 7752,
+      "outputBound": 6000,
+      "reservedUsd": 0.034927200000000005,
+      "rates": [
+        1.1,
+        4.4
+      ],
+      "elapsedSeconds": 18.421,
+      "model": "qwen3.7-plus",
+      "usage": {
+        "prompt_tokens": 1470,
+        "completion_tokens": 1083,
+        "total_tokens": 2553,
+        "prompt_tokens_details": {
+          "cached_tokens": 1152
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 910
+        }
+      },
+      "accountedUsd": 0.006382200000000001,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 33,
+      "time": 1793560454.445211,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "qwen3.7-plus",
+      "inputBound": 8539,
+      "outputBound": 6000,
+      "reservedUsd": 0.03579290000000001,
+      "rates": [
+        1.1,
+        4.4
+      ],
+      "elapsedSeconds": 29.464,
+      "model": "qwen3.7-plus",
+      "usage": {
+        "prompt_tokens": 1695,
+        "completion_tokens": 1780,
+        "total_tokens": 3475,
+        "prompt_tokens_details": {
+          "cached_tokens": 1152
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 1672
+        }
+      },
+      "accountedUsd": 0.009696500000000002,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 34,
+      "time": 1793560483.9212742,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "qwen3.7-plus",
+      "inputBound": 7743,
+      "outputBound": 6000,
+      "reservedUsd": 0.034917300000000005,
+      "rates": [
+        1.1,
+        4.4
+      ],
+      "elapsedSeconds": 21.694,
+      "model": "qwen3.7-plus",
+      "usage": {
+        "prompt_tokens": 1467,
+        "completion_tokens": 1291,
+        "total_tokens": 2758,
+        "prompt_tokens_details": {
+          "cached_tokens": 1152
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 1173
+        }
+      },
+      "accountedUsd": 0.0072941,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 35,
+      "time": 1793560505.6300611,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "qwen3.7-plus",
+      "inputBound": 7761,
+      "outputBound": 6000,
+      "reservedUsd": 0.034937100000000006,
+      "rates": [
+        1.1,
+        4.4
+      ],
+      "elapsedSeconds": 24.285,
+      "model": "qwen3.7-plus",
+      "usage": {
+        "prompt_tokens": 1471,
+        "completion_tokens": 1441,
+        "total_tokens": 2912,
+        "prompt_tokens_details": {
+          "cached_tokens": 1152
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 1310
+        }
+      },
+      "accountedUsd": 0.0079585,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 36,
+      "time": 1793560529.928799,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "qwen3.7-plus",
+      "inputBound": 7740,
+      "outputBound": 6000,
+      "reservedUsd": 0.034914,
+      "rates": [
+        1.1,
+        4.4
+      ],
+      "elapsedSeconds": 29.823,
+      "model": "qwen3.7-plus",
+      "usage": {
+        "prompt_tokens": 1466,
+        "completion_tokens": 1806,
+        "total_tokens": 3272,
+        "prompt_tokens_details": {
+          "cached_tokens": 1152
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 1611
+        }
+      },
+      "accountedUsd": 0.009559,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 37,
+      "time": 1793560559.768949,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "qwen3.7-plus",
+      "inputBound": 7776,
+      "outputBound": 6000,
+      "reservedUsd": 0.03495360000000001,
+      "rates": [
+        1.1,
+        4.4
+      ],
+      "elapsedSeconds": 17.854,
+      "model": "qwen3.7-plus",
+      "usage": {
+        "prompt_tokens": 1473,
+        "completion_tokens": 1040,
+        "total_tokens": 2513,
+        "prompt_tokens_details": {
+          "cached_tokens": 1152
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 945
+        }
+      },
+      "accountedUsd": 0.0061963,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 38,
+      "time": 1793560577.636541,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "qwen3.7-plus",
+      "inputBound": 7758,
+      "outputBound": 6000,
+      "reservedUsd": 0.0349338,
+      "rates": [
+        1.1,
+        4.4
+      ],
+      "elapsedSeconds": 11.245,
+      "model": "qwen3.7-plus",
+      "usage": {
+        "prompt_tokens": 1469,
+        "completion_tokens": 648,
+        "total_tokens": 2117,
+        "prompt_tokens_details": {
+          "cached_tokens": 1152
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 518
+        }
+      },
+      "accountedUsd": 0.004467100000000001,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 39,
+      "time": 1793560588.898668,
+      "stage": "answer",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "qwen3.7-plus",
+      "inputBound": 7785,
+      "outputBound": 6000,
+      "reservedUsd": 0.0349635,
+      "rates": [
+        1.1,
+        4.4
+      ],
+      "elapsedSeconds": 20.044,
+      "model": "qwen3.7-plus",
+      "usage": {
+        "prompt_tokens": 1475,
+        "completion_tokens": 1193,
+        "total_tokens": 2668,
+        "prompt_tokens_details": {
+          "cached_tokens": 1152
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 1029
+        }
+      },
+      "accountedUsd": 0.0068717000000000006,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 40,
+      "time": 1793560653.049676,
+      "stage": "run",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 56841,
+      "outputBound": 12000,
+      "reservedUsd": 0.0524205,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 5.254,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 17036,
+        "completion_tokens": 552,
+        "total_tokens": 17588,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.009622,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 41,
+      "time": 1793560670.361681,
+      "stage": "run",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 56916,
+      "outputBound": 12000,
+      "reservedUsd": 0.052458,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 5.684,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 17013,
+        "completion_tokens": 493,
+        "total_tokens": 17506,
+        "prompt_tokens_details": {
+          "cached_tokens": 15872
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.0094925,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 42,
+      "time": 1793560691.4566941,
+      "stage": "run",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 55720,
+      "outputBound": 12000,
+      "reservedUsd": 0.05186,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 6.259,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 16627,
+        "completion_tokens": 607,
+        "total_tokens": 17234,
+        "prompt_tokens_details": {
+          "cached_tokens": 14336
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.0095275,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 43,
+      "time": 1793560715.907966,
+      "stage": "run",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 57730,
+      "outputBound": 12000,
+      "reservedUsd": 0.052865,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 7.293,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 17283,
+        "completion_tokens": 689,
+        "total_tokens": 17972,
+        "prompt_tokens_details": {
+          "cached_tokens": 15872
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.0100195,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 44,
+      "time": 1793560741.957624,
+      "stage": "run",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 57776,
+      "outputBound": 12000,
+      "reservedUsd": 0.052888,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 6.281,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 17326,
+        "completion_tokens": 632,
+        "total_tokens": 17958,
+        "prompt_tokens_details": {
+          "cached_tokens": 14336
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.009927,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 45,
+      "time": 1793560761.7225149,
+      "stage": "run",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 57371,
+      "outputBound": 12000,
+      "reservedUsd": 0.0526855,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 8.927,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 17147,
+        "completion_tokens": 719,
+        "total_tokens": 17866,
+        "prompt_tokens_details": {
+          "cached_tokens": 15872
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.0100115,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 46,
+      "time": 1793560781.183108,
+      "stage": "run",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 56092,
+      "outputBound": 12000,
+      "reservedUsd": 0.052046,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 8.25,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 16757,
+        "completion_tokens": 712,
+        "total_tokens": 17469,
+        "prompt_tokens_details": {
+          "cached_tokens": 15872
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.0098025,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 47,
+      "time": 1793560804.555934,
+      "stage": "run",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 83077,
+      "outputBound": 12000,
+      "reservedUsd": 0.0655385,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 7.042,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 26721,
+        "completion_tokens": 598,
+        "total_tokens": 27319,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.0145565,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 48,
+      "time": 1793560826.738987,
+      "stage": "run",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 68999,
+      "outputBound": 12000,
+      "reservedUsd": 0.0584995,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 6.705,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 21466,
+        "completion_tokens": 569,
+        "total_tokens": 22035,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.011871,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 49,
+      "time": 1793560851.9548109,
+      "stage": "run",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 81598,
+      "outputBound": 12000,
+      "reservedUsd": 0.064799,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 6.426,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 26168,
+        "completion_tokens": 646,
+        "total_tokens": 26814,
+        "prompt_tokens_details": {
+          "cached_tokens": 4096
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.014376,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 50,
+      "time": 1793560874.915398,
+      "stage": "run",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 79752,
+      "outputBound": 12000,
+      "reservedUsd": 0.063876,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 9.067,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 25487,
+        "completion_tokens": 583,
+        "total_tokens": 26070,
+        "prompt_tokens_details": {
+          "cached_tokens": 4096
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.0139095,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 51,
+      "time": 1793560904.0990772,
+      "stage": "run",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 81164,
+      "outputBound": 12000,
+      "reservedUsd": 0.064582,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 6.105,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 25958,
+        "completion_tokens": 484,
+        "total_tokens": 26442,
+        "prompt_tokens_details": {
+          "cached_tokens": 24192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.013947,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 52,
+      "time": 1793560930.316022,
+      "stage": "run",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 62096,
+      "outputBound": 12000,
+      "reservedUsd": 0.055048,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 6.55,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 19012,
+        "completion_tokens": 639,
+        "total_tokens": 19651,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.010784,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 53,
+      "time": 1793560960.481292,
+      "stage": "run",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 79673,
+      "outputBound": 12000,
+      "reservedUsd": 0.0638365,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 5.481,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 25422,
+        "completion_tokens": 450,
+        "total_tokens": 25872,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.013611,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 54,
+      "time": 1793560986.1865568,
+      "stage": "run",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 79779,
+      "outputBound": 12000,
+      "reservedUsd": 0.0638895,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 5.623,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 25526,
+        "completion_tokens": 503,
+        "total_tokens": 26029,
+        "prompt_tokens_details": {
+          "cached_tokens": 4736
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.013769,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 55,
+      "time": 1793561019.703216,
+      "stage": "run",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 68803,
+      "outputBound": 12000,
+      "reservedUsd": 0.0584015,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 9.131,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 21325,
+        "completion_tokens": 852,
+        "total_tokens": 22177,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.0123665,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 56,
+      "time": 1793561058.8145359,
+      "stage": "run",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 76896,
+      "outputBound": 12000,
+      "reservedUsd": 0.062448,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 5.161,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 24517,
+        "completion_tokens": 428,
+        "total_tokens": 24945,
+        "prompt_tokens_details": {
+          "cached_tokens": 2048
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.0131145,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 57,
+      "time": 1793561090.3891299,
+      "stage": "run",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 83616,
+      "outputBound": 12000,
+      "reservedUsd": 0.065808,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 8.13,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 26906,
+        "completion_tokens": 727,
+        "total_tokens": 27633,
+        "prompt_tokens_details": {
+          "cached_tokens": 4096
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.014907,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 58,
+      "time": 1793561123.845771,
+      "stage": "run",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 78742,
+      "outputBound": 12000,
+      "reservedUsd": 0.063371,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 8.403,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 25160,
+        "completion_tokens": 770,
+        "total_tokens": 25930,
+        "prompt_tokens_details": {
+          "cached_tokens": 24192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.01412,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 59,
+      "time": 1793561160.9375958,
+      "stage": "run",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 78240,
+      "outputBound": 12000,
+      "reservedUsd": 0.06312,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 8.195,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 24951,
+        "completion_tokens": 540,
+        "total_tokens": 25491,
+        "prompt_tokens_details": {
+          "cached_tokens": 22528
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.0135555,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    },
+    {
+      "id": 60,
+      "time": 1793561198.4046981,
+      "stage": "run",
+      "status": 200,
+      "host": "aihubmix.com",
+      "requestedModel": "deepseek-v4.1-flash-1017",
+      "inputBound": 67235,
+      "outputBound": 12000,
+      "reservedUsd": 0.0576175,
+      "rates": [
+        0.5,
+        2
+      ],
+      "elapsedSeconds": 6.865,
+      "model": "deepseek-v4-1-flash-261017",
+      "usage": {
+        "prompt_tokens": 20853,
+        "completion_tokens": 618,
+        "total_tokens": 21471,
+        "prompt_tokens_details": {
+          "cached_tokens": 18432
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "accountedUsd": 0.0116625,
+      "reservationExceeded": false,
+      "finishReason": "stop"
+    }
+  ],
+  "budgetUsd": 1.0,
+  "budgetCny": 10,
+  "budgetConversionCnyPerUsd": 10
+}

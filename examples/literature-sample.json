@@ -1,0 +1,176 @@
+{
+  "description": "完全虚构的格式样例，用于说明引用与人物范围，不作为历史资料；省略运行时hash、图片和工作台版本。",
+  "documents": [
+    {
+      "id": "doc-1",
+      "title": "合成材料",
+      "format": "pdf",
+      "filename": "example.pdf",
+      "pageCount": 1,
+      "parseVersion": "pdfium-pages-1",
+      "parseStatus": "ready",
+      "pages": [
+        {
+          "id": "doc-1-page-1",
+          "page": 1,
+          "text": "《画甲》中，甲与两名侍者相对。研究者丙认为乙可能在场，但尚无定论。",
+          "engine": "pdfium",
+          "quality": {
+            "state": "ready",
+            "characters": 33,
+            "imageCount": 0,
+            "warning": ""
+          }
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "doc-1-p1",
+      "version": 1,
+      "title": "合成材料 · 第1页",
+      "documentId": "doc-1",
+      "page": 1,
+      "text": "《画甲》中，甲与两名侍者相对。研究者丙认为乙可能在场，但尚无定论。",
+      "method": "extracted",
+      "confirmed": false
+    }
+  ],
+  "documentAnalysis": {
+    "id": "analysis-1",
+    "status": "pending",
+    "targetArtwork": "画甲",
+    "claims": [
+      {
+        "id": "claim-1",
+        "kind": "relationships",
+        "topic": "people_relationship",
+        "text": "文献描述甲与侍者相对。",
+        "assertion": "description",
+        "indirectSource": "",
+        "references": [
+          {
+            "sourceId": "doc-1-p1",
+            "sourceVersion": 1,
+            "documentId": "doc-1",
+            "page": 1,
+            "start": 0,
+            "end": 15,
+            "quote": "《画甲》中，甲与两名侍者相对。"
+          }
+        ]
+      }
+    ],
+    "people": [
+      {
+        "id": "candidate-1",
+        "name": "甲",
+        "scope": "depicted",
+        "artwork": "画甲",
+        "contextRoles": [
+          "depicted"
+        ],
+        "roleType": "named",
+        "summary": "文献明确描述甲在画中；未提供具体身份／经历。",
+        "identity": "",
+        "biography": "",
+        "relationships": "与侍者相对",
+        "references": [
+          {
+            "sourceId": "doc-1-p1",
+            "sourceVersion": 1,
+            "documentId": "doc-1",
+            "page": 1,
+            "start": 0,
+            "end": 15,
+            "quote": "《画甲》中，甲与两名侍者相对。"
+          }
+        ],
+        "depictionReferences": [
+          {
+            "sourceId": "doc-1-p1",
+            "sourceVersion": 1,
+            "documentId": "doc-1",
+            "page": 1,
+            "start": 0,
+            "end": 15,
+            "quote": "《画甲》中，甲与两名侍者相对。"
+          }
+        ],
+        "visualHints": [],
+        "aliases": [],
+        "aliasQuestions": []
+      },
+      {
+        "id": "candidate-2",
+        "name": "乙",
+        "scope": "unknown",
+        "artwork": "画甲",
+        "contextRoles": [
+          "uncertain"
+        ],
+        "summary": "研究者提出可能在场，尚无定论。",
+        "references": [
+          {
+            "sourceId": "doc-1-p1",
+            "sourceVersion": 1,
+            "documentId": "doc-1",
+            "page": 1,
+            "start": 15,
+            "end": 33,
+            "quote": "研究者丙认为乙可能在场，但尚无定论。"
+          }
+        ],
+        "depictionReferences": [],
+        "visualHints": []
+      },
+      {
+        "id": "candidate-3",
+        "name": "丙",
+        "scope": "background",
+        "contextRoles": [
+          "scholar"
+        ],
+        "summary": "研究者，资料未说明其在画中。",
+        "references": [
+          {
+            "sourceId": "doc-1-p1",
+            "sourceVersion": 1,
+            "documentId": "doc-1",
+            "page": 1,
+            "start": 15,
+            "end": 33,
+            "quote": "研究者丙认为乙可能在场，但尚无定论。"
+          }
+        ],
+        "depictionReferences": [],
+        "visualHints": []
+      }
+    ],
+    "summaries": {
+      "background": [],
+      "relationships": [
+        {
+          "text": "文献描述甲与侍者相对。",
+          "claimIds": [
+            "claim-1"
+          ],
+          "references": [
+            {
+              "sourceId": "doc-1-p1",
+              "sourceVersion": 1,
+              "documentId": "doc-1",
+              "page": 1,
+              "start": 0,
+              "end": 15,
+              "quote": "《画甲》中，甲与两名侍者相对。"
+            }
+          ]
+        }
+      ],
+      "narrative": []
+    },
+    "validationWarnings": []
+  }
+}

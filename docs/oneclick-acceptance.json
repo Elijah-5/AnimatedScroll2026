@@ -1,0 +1,57 @@
+{
+  "sourceVersion": 90,
+  "realRequests": 60,
+  "requestLimit": 60,
+  "conservativeCostCny": 9.493425,
+  "budgetCny": 10,
+  "unknownOutcomes": 0,
+  "reservationExceeded": false,
+  "videoSubmissions": 0,
+  "comparison": [
+    {
+      "protocol": "initial-1",
+      "model": "deepseek-v4.1-flash-1017",
+      "samples": 8,
+      "valid": 5,
+      "meanSeconds": 1.93
+    },
+    {
+      "protocol": "initial-1",
+      "model": "qwen3.7-plus",
+      "samples": 8,
+      "valid": 8,
+      "meanSeconds": 17.32
+    },
+    {
+      "protocol": "validated-repair-1",
+      "model": "deepseek-v4.1-flash-1017",
+      "samples": 8,
+      "valid": 8,
+      "meanSeconds": 2.54
+    },
+    {
+      "protocol": "validated-repair-1",
+      "model": "qwen3.7-plus",
+      "samples": 8,
+      "valid": 8,
+      "meanSeconds": 23.03
+    }
+  ],
+  "decision": "保留当前DeepSeek默认；Qwen格式稳定但明显更慢，未证实更适合本项目",
+  "finalLocal": {
+    "capabilities": {
+      "chatCharacters": 5,
+      "paintingInstances": 13,
+      "storyboards": 22
+    },
+    "exportStatus": 200,
+    "schema": "3.4",
+    "skipped": 5,
+    "storyboards": 22,
+    "exportReview": {
+      "manualReviewed": false
+    }
+  },
+  "finishState": "failed",
+  "finishReason": "真实模型请求已达到本轮上限，已保存进度，未继续调用"
+}

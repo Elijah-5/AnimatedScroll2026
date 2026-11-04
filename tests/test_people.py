@@ -42,6 +42,7 @@ def test_direct_name_duplicate_and_no_llm(client,monkeypatch):
     c=next(c for c in p['characters'] if c['name']=='殿前侍卫')
     assert c['namingOrigin']=='creator' and not c['identity'] and not c['biography']
     assert not c['confirmed'] and p['annotations'][0]['characterId']==c['id']
+    assert p['annotations'][0]['identityManual'] is True
     r=client.post(path+'/people/a1/name',json=dict(version=p['version'],name='殿前侍卫'))
     assert r.status_code==409 and r.json()['detail']['code']=='name_exists'
     p=client.post(path+'/people/a1/name',json=dict(version=p['version'],name='殿前侍卫',useExisting=True)).json()
@@ -49,17 +50,17 @@ def test_direct_name_duplicate_and_no_llm(client,monkeypatch):
     assert p['annotations'][1]['characterId']==c['id']
 
 
-def test_profile_and_geometry_changes_invalidate(client):
+def test_profile_and_geometry_changes_keep_existing_identity(client):
     p=person_project(client);path='/api/projects/'+p['id'];cid=p['characters'][0]['id']
     p=client.post(path+'/people/a0/confirm',json=dict(version=p['version'],characterId=cid)).json()
     p['annotations'][0]['x']=.2
     p=client.put(path,json=p).json()
-    assert not p['annotations'][0]['identityConfirmed'] and p['characters'][0]['confirmed']
+    assert p['annotations'][0]['identityConfirmed'] and p['characters'][0]['confirmed']
     assert p['annotations'][0]['characterId']==cid
     p=client.post(path+'/people/a0/confirm',json=dict(version=p['version'],characterId=cid)).json()
     p['characters'][0]['identity']='已修改身份'
     p=client.put(path,json=p).json()
-    assert not p['characters'][0]['confirmed'] and not p['annotations'][0]['identityConfirmed']
+    assert p['characters'][0]['basisChanged'] and p['annotations'][0]['identityConfirmed']
 
 
 def test_deleted_instance_can_be_restored_without_deleting_role(client):

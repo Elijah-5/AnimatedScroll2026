@@ -2,7 +2,7 @@ from .domain import blank, uid
 
 def sample():
     p = blank()
-    p['title'] = '听乐片段 · 人工编写演示草稿'
+    p['title'] = '韩熙载夜宴图'
     # Editorial paraphrase, not a primary-source transcription or AI-generated evidence.
     source = dict(id=uid(),version=1,title='故宫藏品说明 · 人工整理的阅读笔记（非原文）',citation='故宫博物院《顾闳中韩熙载夜宴图卷》 https://www.dpm.org.cn/collection/paint/228200.html',location='全图五段及首段听乐的介绍；请对照馆方网页复核',text='馆方介绍将画卷分成听乐、观舞、暂歇、清吹、散宴五段。听乐段中，韩熙载与郎粲同坐床榻，聆听李家明之妹演奏琵琶；李家明在妹妹旁边。此笔记仅概括馆方描述，不包含现场对白或人物动机的历史记录。')
     p['sources'] = [source]

@@ -1,0 +1,20 @@
+{
+  "databaseTablesUnchanged": {
+    "projects": true,
+    "events": true,
+    "tasks": true,
+    "studio_jobs": true,
+    "video_jobs": true,
+    "experience_sessions": true,
+    "experience_turns": true,
+    "works": true,
+    "background_episodes": true,
+    "persons": true,
+    "work_persons": true,
+    "person_lines": true,
+    "hist_sources": true,
+    "quotations": true,
+    "inferences": true
+  },
+  "credentialsUnchanged": true
+}

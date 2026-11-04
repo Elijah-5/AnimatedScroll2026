@@ -1,0 +1,61 @@
+{
+  "backendTests": 341,
+  "frontendTests": 45,
+  "build": true,
+  "realRequests": 0,
+  "paidVideoRequests": 0,
+  "reviewReceiptProjects": [
+    "52c2c5dab35e",
+    "f417cabb0972",
+    "85e0f870d8bc"
+  ],
+  "latestBackup": "/Users/linjingyang/Downloads/AnimatedScroll-HXZ-Catchup/Projects/merge-backups/review-rollout-20261101T215952Z",
+  "reloadTablesUnchanged": true,
+  "protectedTablesUnchanged": {
+    "tasks": true,
+    "studio_jobs": true,
+    "video_jobs": true,
+    "experience_sessions": true,
+    "experience_turns": true
+  },
+  "creationContentUnchanged": {
+    "52c2c5dab35e": {
+      "image": true,
+      "sources": true,
+      "annotations": true,
+      "observations": true,
+      "matches": true,
+      "documents": true,
+      "materialInputs": true,
+      "characters": true,
+      "documentAnalysis": true,
+      "draftsAndPublished": true
+    },
+    "f417cabb0972": {
+      "image": true,
+      "sources": true,
+      "annotations": true,
+      "observations": true,
+      "matches": true,
+      "documents": true,
+      "materialInputs": true,
+      "characters": true,
+      "documentAnalysis": true,
+      "draftsAndPublished": true
+    },
+    "85e0f870d8bc": {
+      "image": true,
+      "sources": true,
+      "annotations": true,
+      "observations": true,
+      "matches": true,
+      "documents": true,
+      "materialInputs": true,
+      "characters": true,
+      "documentAnalysis": true,
+      "draftsAndPublished": true
+    }
+  },
+  "envUnchanged": true,
+  "mysqlConnectivityTested": false
+}

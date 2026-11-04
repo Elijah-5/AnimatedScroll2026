@@ -85,7 +85,7 @@ def test_ocr_partial_result(tmp_path,monkeypatch):
         assert p['sources'][0]['confirmed'] is False
 
 
-def test_task_stale_input(tmp_path,monkeypatch):
+def test_task_ignores_unrelated_project_rename(tmp_path,monkeypatch):
     monkeypatch.setattr(main,'DATA',tmp_path)
     def detect(*args):
         p=main.get(pid);p['title']='concurrent';main.save(p,p['version'],'test_edit')
@@ -94,11 +94,11 @@ def test_task_stale_input(tmp_path,monkeypatch):
     with TestClient(main.app) as client:
         p=client.post('/api/sample?example=zhekan').json();pid=p['id'];path='/api/projects/'+pid
         client.post(path+'/tasks',json=dict(version=p['version'],kind='detect'))
-        assert wait(client,pid)['status']=='stale'
+        assert wait(client,pid)['status']=='completed'
         assert client.get(path).json()['title']=='concurrent'
 
 
-def test_moved_box_invalidates_visual_identity():
+def test_moved_box_keeps_confirmation_and_marks_basis_change():
     import copy
     from backend.domain import reconcile
     from backend.zhekan import sample
@@ -107,8 +107,8 @@ def test_moved_box_invalidates_visual_identity():
     old['matches']=[dict(annotationId='a',confirmed=True)]
     new=copy.deepcopy(old);new['annotations'][0]['x']=.2
     result=reconcile(old,new)
-    assert not result['observations'][0]['confirmed'] and result['observations'][0]['stale']
-    assert not result['matches'][0]['confirmed']
+    assert result['observations'][0]['confirmed'] and result['observations'][0]['basisChanged']
+    assert result['matches'][0]['confirmed'] and result['matches'][0]['basisChanged']
 
 
 def test_creative_brief_is_not_historical_evidence():

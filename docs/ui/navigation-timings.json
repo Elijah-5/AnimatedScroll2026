@@ -1,0 +1,92 @@
+{
+  "measurement": "浏览器自动化点击及读取界面状态，非纯绘制耗时",
+  "delayedFullReadSeconds": 1.5,
+  "isolated": [
+    {
+      "label": "剧本大纲",
+      "ms": 249,
+      "disabled": 0,
+      "heading": "剧本大纲"
+    },
+    {
+      "label": "线索库",
+      "ms": 144,
+      "disabled": 0,
+      "heading": "线索库"
+    },
+    {
+      "label": "分镜管理",
+      "ms": 157,
+      "disabled": 0,
+      "heading": "分镜管理"
+    },
+    {
+      "label": "古画资料库",
+      "ms": 403,
+      "disabled": 0,
+      "heading": "古画资料库"
+    },
+    {
+      "label": "人物档案",
+      "ms": 114,
+      "disabled": 0,
+      "heading": "人物档案"
+    },
+    {
+      "label": "概览",
+      "ms": 176,
+      "disabled": 0,
+      "heading": "概览"
+    },
+    {
+      "label": "人物档案",
+      "ms": 106,
+      "disabled": 0,
+      "heading": "人物档案"
+    }
+  ],
+  "production": [
+    {
+      "label": "古画资料库",
+      "ms": 418,
+      "disabled": 0,
+      "heading": "古画资料库",
+      "status": "一键确认本页已保存v77"
+    },
+    {
+      "label": "人物档案",
+      "ms": 191,
+      "disabled": 0,
+      "heading": "人物档案",
+      "status": "一键确认本页已保存v77"
+    },
+    {
+      "label": "剧本大纲",
+      "ms": 150,
+      "disabled": 0,
+      "heading": "剧本大纲",
+      "status": "一键确认本页已保存v77"
+    },
+    {
+      "label": "线索库",
+      "ms": 120,
+      "disabled": 0,
+      "heading": "线索库",
+      "status": "一键确认本页已保存v77"
+    },
+    {
+      "label": "分镜管理",
+      "ms": 286,
+      "disabled": 0,
+      "heading": "分镜管理",
+      "status": "一键确认本页已保存v77"
+    },
+    {
+      "label": "人物档案",
+      "ms": 97,
+      "disabled": 0,
+      "heading": "人物档案",
+      "status": "一键确认本页已保存v77"
+    }
+  ]
+}

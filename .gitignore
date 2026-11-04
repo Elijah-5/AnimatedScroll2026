@@ -8,3 +8,7 @@ __pycache__/
 models/
 .DS_Store
 *.log
+
+.runtime/
+
+.env.mysql

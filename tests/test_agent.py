@@ -34,3 +34,16 @@ def test_format_failure_limited(monkeypatch):
 def test_missing_key(monkeypatch):
     monkeypatch.delenv('AIHUBMIX_API_KEY',raising=False)
     with pytest.raises(ValueError,match='AIHUBMIX_API_KEY'):asyncio.run(agent.generate('extract',sample()))
+
+
+@pytest.mark.parametrize('kind', ['plot_clues','plots'])
+def test_narrative_generation_accepts_one_paragraph_without_units(monkeypatch,kind):
+    import json
+    from backend import studio_agent
+    monkeypatch.setenv('AIHUBMIX_API_KEY','test-key');monkeypatch.setattr(studio_agent,'AsyncOpenAI',FakeClient)
+    clue=dict(name='进谏前',content='朱云走到殿前，准备向皇帝陈述。')
+    payload=dict(clues=[clue]) if kind=='plot_clues' else dict(plots=[dict(title='进谏',goal='呈现冲突',body='剧情内容',characterIds=[],clues=[clue])])
+    FakeClient.calls=0;FakeClient.replies=[json.dumps(payload,ensure_ascii=False)]
+    result=asyncio.run(studio_agent.run(kind,dict(intent=dict(plotCount=1),characters=[],targetPlot=dict(id='p',title='进谏'))))
+    actual=result['clues'][0] if kind=='plot_clues' else result['plots'][0]['clues'][0]
+    assert actual==clue and FakeClient.calls==1

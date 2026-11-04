@@ -1,0 +1,282 @@
+{
+  "createdAt": "2026-11-01T05:22:24.571524+00:00",
+  "base": "creation-agent-demo including pre-existing uncommitted files",
+  "source": "github-version-2 (read only)",
+  "backup": "../../merge-backups/20261031-235253",
+  "validation": {
+    "backendTests": 165,
+    "frontendStateTests": 20,
+    "build": "passed",
+    "realModelRequests": 0,
+    "realMySQL": "not run",
+    "creatorData": "unchanged"
+  },
+  "changed": [
+    {
+      "path": ".env.example",
+      "beforeSha256": "9b5207595ee6793ae918035c01dd98cadd44fa6da3dc64bd230f12d3e235b835",
+      "afterSha256": "ca6dedd0609051f82a78f3d69b1f4ab98bdc840714dc43bc6ae38ce22b83c958"
+    },
+    {
+      "path": ".gitignore",
+      "beforeSha256": "2fb5a258313349e3d1b46535cc1e35805f9e0f4533d91a71b15d43c3a2f0cfc5",
+      "afterSha256": "00ec1c3dfb8239a86fa1a5b7d535919d33c30aaa981981acbed1b80026b5dafc"
+    },
+    {
+      "path": "README.md",
+      "beforeSha256": "a835f91d8072723384dba99ebddde8a2f754a98150bfe2f45e3eecf5b95e9573",
+      "afterSha256": "179fc56a39dd9824621cacb293927444300dedecca909a4cb17bd57d3c7cd655"
+    },
+    {
+      "path": "VERIFICATION.md",
+      "beforeSha256": "239e357c23bd16357bac90c6409a1a9ba493975c8b9bcd3abcd2412c3f7ff51f",
+      "afterSha256": "0a7694ca9eb6f7f5a6299c6a32adaa8a16f02d3ae4c1e4229b1a02abcb61009b"
+    },
+    {
+      "path": "backend/agent.py",
+      "beforeSha256": "4798c1a072e28064a951652e1ae00ba6be07523b246ee4ec23dc8406a2e623e3",
+      "afterSha256": "e17516eb2e74288d69a43562ea4003a6cf691d1544864ccf86b6910e11a0198e"
+    },
+    {
+      "path": "backend/config.py",
+      "beforeSha256": "b0a062a209c0f41900069d4e887a20ed6ed33a53e8ea0c9acf826d22c0697d31",
+      "afterSha256": "b19ab33bd5ef003696b2bef420568780d9452f15d35a782fac4c1309d49e49ad"
+    },
+    {
+      "path": "backend/documents.py",
+      "beforeSha256": "f7d2b590ff1a068892dded6a644e606fb576f04f096131de05e523ef7a32bd75",
+      "afterSha256": "0dcfc161eea4bbda3918ad07096554635dc97093d21a462b518ff092d7318266"
+    },
+    {
+      "path": "backend/main.py",
+      "beforeSha256": "85570fe94b42227637153df9d02101ff862ec395f434e4e64a5189948117515d",
+      "afterSha256": "ce3c3aa7265fcd711328e039c25e9d62dc43b1c2c9c40278e2bc44f6a3faa656"
+    },
+    {
+      "path": "backend/materials.py",
+      "beforeSha256": "cf8af24532fe9e1ae05c23b5b366c65b05bae19ff326583a805829243d800dcc",
+      "afterSha256": "1aab409977bbdd3d3042b6e3349281b2da6f27fa66821626e07c5d503fa0ca8f"
+    },
+    {
+      "path": "backend/models.py",
+      "beforeSha256": "7b23b771f41ea5903d68bbc8f54521952d1bcecff10ecad57c9210abea1c792d",
+      "afterSha256": "ea3292b789f3287b6d58430b12f999042e79f1b7859183d431c2eeae1c4be783"
+    },
+    {
+      "path": "backend/pipeline.py",
+      "beforeSha256": "36a7bf4e55ab44f835bc59cbc93fa6725f5f57a8da3803163e4252332f3cc58f",
+      "afterSha256": "994443398146f93dc3923c968869f98bd733e8e08a34eaa163f4f7b96b97c3eb"
+    },
+    {
+      "path": "backend/studio.py",
+      "beforeSha256": "d4068a79504781803bdf6f0a898aade69927d9889aa87d6fc8af3022e57e9819",
+      "afterSha256": "37608af800378ca3cf2b11241199bc77b32fa78ca4713669dad8eff46ed8345d"
+    },
+    {
+      "path": "backend/studio_agent.py",
+      "beforeSha256": "cf677164d24aa3851e88dc3a01c94aa2c4d7c4924c7eeebaedf6c1ae03d9cbe6",
+      "afterSha256": "2cfd6c8c42185dc554849cc4c5577ed7e33957ce534a9ca24b648d68aab47ed8"
+    },
+    {
+      "path": "backend/vision.py",
+      "beforeSha256": "f3127ad87c4dd9f016706af905fe431d6133bf0f6e69b9bcc9992d5bea6b1ca9",
+      "afterSha256": "b41e7267c0a85f51d6cf54d81a82ae107b5910c1ad7eba563dc287863576b669"
+    },
+    {
+      "path": "backend/workspace.py",
+      "beforeSha256": "2cc5e065b5d23bcfa432ad8df3d7f7f670bb33aae0184ac2dcced1c59d53acb1",
+      "afterSha256": "0223a0da6eb12b38f1dc133dd45d6012a1e730a5cbc3c11d36a0c81315e72227"
+    },
+    {
+      "path": "docs/05-分镜管理.md",
+      "beforeSha256": "c58e99ff3b4697a04bfdd783c00a9e3c44a1a4c496a12e68de680b8fe7634784",
+      "afterSha256": "8e730d9bb22f7a1a9948851a5d9aa945977e3a60acff8715f973bb1e46d64b28"
+    },
+    {
+      "path": "docs/06-检查与发布.md",
+      "beforeSha256": "02e4b0d7c6c38690c044349340b484e97eb819f645629031b3f90a2e87739c4a",
+      "afterSha256": "4eddee09edd97a43ebbe8844e27ded263351c7ea507202d9ea09691b1414dac6"
+    },
+    {
+      "path": "docs/07-欣赏作品.md",
+      "beforeSha256": "41054b3da6b6fb841ed0acf2ba830451114d8cf41c7b536a2357bd17e560a647",
+      "afterSha256": "4cd7eb82355c21f6905f0d117b28a1df5b7fae04336eb8bc0e90b9f0bbf1ca41"
+    },
+    {
+      "path": "docs/08-版本与依赖规则.md",
+      "beforeSha256": "e9c601fbd49d53c73cf23ceecbc96f2307e1d700f2139fad50f37fbfefa9f877",
+      "afterSha256": "8b66270fc3bba1454192ced3e92a21137b8304baa6ccfac3338e7ebf718369f1"
+    },
+    {
+      "path": "docs/09-数据存储与格式.md",
+      "beforeSha256": "04052b54868be555c5fca4385f9d9c496707a13dcbd7979317f0c13bfebe1fb5",
+      "afterSha256": "0fb66d9373892ce7dc3d42864fc160486b82fdc6bd98871e2f7e6bf799b19ed3"
+    },
+    {
+      "path": "docs/README.md",
+      "beforeSha256": "e51829ea2e149fe0e214c231ee1a887e4a222b35dfd905eb9a79ebe2c0ead069",
+      "afterSha256": "7999c600285b01fe183999545030347387d05f66dd1744aaaff19ece3158f6d1"
+    },
+    {
+      "path": "package.json",
+      "beforeSha256": "e31381bc1c124f670520bf6da1f4ab8922a3d4246003345326953af0c28f18f3",
+      "afterSha256": "cadc08e84c5ec2e9eba2f18d5a9861019cf2f4664573f470aa8e6c09078b828a"
+    },
+    {
+      "path": "requirements.txt",
+      "beforeSha256": "0d157a951ef9ab88b34ca635980a0e580bfcd4a427952d56ccafc7d746e0f36f",
+      "afterSha256": "df96c11ede09540b2db1a9652f0a303b3a3ac753cc1fb3279e986569fe52fde8"
+    },
+    {
+      "path": "src/StudioApp.vue",
+      "beforeSha256": "bded2edaf171831ce6ca8b2fb5ec8e76af534d2b41c3cca916e06a2112d82dd9",
+      "afterSha256": "1aef1a4ea656d7ae0519621f8fedef0b24b71d968798f0851d877585fc87d7ee"
+    },
+    {
+      "path": "src/pages/ChecksPage.vue",
+      "beforeSha256": "c8a6952d9371f96301dfe7e40e752a493e1ff78cabdf8323132cbf0783909dfa",
+      "afterSha256": "43f7d8cd1a2b11be6da19ab87f4b5661dc88244289bc6ca6ac918c3812b19a23"
+    },
+    {
+      "path": "src/pages/CluesPage.vue",
+      "beforeSha256": "eaaae7eb40a1410ab58bf1ba0374d8cab0848c8244213be302ef68afabc975b1",
+      "afterSha256": "0e2cb0ff5751046c6acd2e73633e06472dad5d5c82e0cc5fa07913a14021c028"
+    },
+    {
+      "path": "src/pages/LibraryPage.vue",
+      "beforeSha256": "585e20a28387fa37a0077377dd0d576d77863b434843dfe29fa0019ea0934911",
+      "afterSha256": "488e499746288a8613fb0586404cdeee80c2373d219d18ba4050ecc776966d2e"
+    },
+    {
+      "path": "src/pages/OverviewPage.vue",
+      "beforeSha256": "46174c0232812d122d2591c9012c34e67add397f0145398e4bc8862d466dd0dc",
+      "afterSha256": "8576c90238231453c38ed66423c103302a4b75ec863779c7782cda398ccb39cc"
+    },
+    {
+      "path": "src/pages/StoryboardsPage.vue",
+      "beforeSha256": "599ed7d494205e0592a62cf8d6ee06e942b31bd71125707315e490415bfebf26",
+      "afterSha256": "dc4d1147aa7395a9a95944f6f674cd668a3b8a8db3f388e2d39c7603425fe7f5"
+    },
+    {
+      "path": "tests/conftest.py",
+      "beforeSha256": "b324f1069d73907da180379c325bab2f5df22c6436f46a3f727f5dd7c60bc1ef",
+      "afterSha256": "b81817a9eeb715db4701b15565423abad8b2ff2639fe13a76623028cc1fc7eb8"
+    },
+    {
+      "path": "vite.config.ts",
+      "beforeSha256": "6cb32155c2f8a00d8d58c7cc83d1c2baa44200643fb1c558d798bbb54ea82779",
+      "afterSha256": "882ca2536fd72447606d5ecd122a95430de14e33359b704dba273ceb1ef13cbf"
+    }
+  ],
+  "added": [
+    {
+      "path": ".env.mysql.example",
+      "sha256": "8013560e0e3f0c460eab6bf67e82d1acf2ed6c549dfc0e2b5615157de0c51199"
+    },
+    {
+      "path": "backend/catalog.py",
+      "sha256": "6584eb0503ec63cb9e2db71046007e8b6f9dd6a072a6e0e5da42d265de2d33c4"
+    },
+    {
+      "path": "backend/consumption.py",
+      "sha256": "64beedc281dd99019ab6bd8c8bd09280a6c88477103367bce063e1f0af03069e"
+    },
+    {
+      "path": "backend/experience.py",
+      "sha256": "096e87c98949c12ac1dab7e2040d7585ab82f3c7a2ef3f46adb606c84e334ffd"
+    },
+    {
+      "path": "backend/narrative.py",
+      "sha256": "bdc2eee0c3be6820acd66a3d030982226f5c026c6205837c0dc4b2a2f3a061d8"
+    },
+    {
+      "path": "backend/storage.py",
+      "sha256": "dd43eda81bfa390fb8c6effbdada9d48b438213bfaf0908b509265addc301829"
+    },
+    {
+      "path": "backend/video.py",
+      "sha256": "b4ce03125d7b9979c323f470306b9e10fcc87b2b15012c341432596115365f01"
+    },
+    {
+      "path": "compose.mysql.yaml",
+      "sha256": "69cefb2b3f7203f822b05687d4f74e86b6214587b9ed6c404e6752cca7cf090d"
+    },
+    {
+      "path": "docs/13-版本合并与视频体验.md",
+      "sha256": "0b2796b66052a41f4f1e3869dca5078585a424c812dc6cd4c3a800151b694144"
+    },
+    {
+      "path": "docs/ui/merge-experience.jpg",
+      "sha256": "50df75216bfec1b23ece6403c8cda97e1f84a73ad137df7fbef962aef2fd392c"
+    },
+    {
+      "path": "examples/assets/宋人折槛图_部分.jpg",
+      "sha256": "4769ac8470d4946383e91473c91d740811c43a91554014bec95a40d33c2288b5"
+    },
+    {
+      "path": "examples/assets/步辇图.jpg",
+      "sha256": "42e7dfdd6b74a0126a0dee1c306b13a0891ece0ad4489e5b548ba56127212b05"
+    },
+    {
+      "path": "examples/assets/重屏会棋图.jpg",
+      "sha256": "f09be6e12ba54b55c0a03afdf487d99ed5be8fa9c3e61316ef39b5b78794eb73"
+    },
+    {
+      "path": "scripts/check_detector.py",
+      "sha256": "0689734f75b84750af579e231196d71ac15eda9b7cf4f2fbd1273f3723add25c"
+    },
+    {
+      "path": "scripts/check_model_access.py",
+      "sha256": "771ff610f871755c7d702ab7d023fcdf2382f680cde6079da51bd1aac6b2aafd"
+    },
+    {
+      "path": "scripts/migrate_sqlite_to_mysql.py",
+      "sha256": "080c3aae78edaa8cb887351d82eb40107c576c6acfa80ea8f436d0ba50d58368"
+    },
+    {
+      "path": "scripts/prepare_detector.py",
+      "sha256": "02ba9d6bff48544016c8f3dd1da4d09ad2947c12a4ffaf81cb22f01578527c9b"
+    },
+    {
+      "path": "src/CatalogPanel.vue",
+      "sha256": "8238b2fbab5a5abbcafccbc323b76ad37e3efb7c8d3052a27f8bc5495658dffa"
+    },
+    {
+      "path": "src/DeliveryPanel.vue",
+      "sha256": "be2ea6dcfee09b4ca0a1b3d3e98680fbdecb40dbf72508f99452fdda4dd0b919"
+    },
+    {
+      "path": "src/ExperiencePage.vue",
+      "sha256": "fd2e5b2ba251ccb4601d4ab315d6a6d3aa12ec2545ea5e5017659fb55b65bc81"
+    },
+    {
+      "path": "src/ProjectArchive.vue",
+      "sha256": "6bf68f24bc2ace56dcedd584221d0299e5b9a229867b14389596eac035f5a95e"
+    },
+    {
+      "path": "src/VideoPanel.vue",
+      "sha256": "af1c1b8e5b3bdd3fe314413604bf51a74b0e3eb8b4e31fba7203ac187b2d16f5"
+    },
+    {
+      "path": "src/experienceRuntime.ts",
+      "sha256": "f75ec61c545888021df32c8c9d8de98982e84d54e5f7c1d6a5a199ba997838a8"
+    },
+    {
+      "path": "src/extensions.css",
+      "sha256": "9aff57f461d90baba85f269a6410a8e30e963b50df3172548b28e44ea4a6484b"
+    },
+    {
+      "path": "tests/experience-state.test.mjs",
+      "sha256": "807474a6a80074e4405948f1f6d8d22e6f8432fcba9123d48fb12693d29b5870"
+    },
+    {
+      "path": "tests/test_merged_features.py",
+      "sha256": "834c005df4253b2bce680e1d5961ffdd485e9fcd79325f86edbf6f0ddffade12"
+    },
+    {
+      "path": "tests/ui_mock_server.py",
+      "sha256": "a8e454b7a067e5193445c46dab2070f7a78c913d83ae494a0676996c407be24b"
+    }
+  ],
+  "removed": []
+}

@@ -1,11 +1,13 @@
+from .llm_response import options, json_text
 from . import config
 import copy
 import json
 import os
-from openai import AsyncOpenAI
+from .model_client import AsyncOpenAI
 from pydantic import BaseModel, Field
 from typing import Literal
 from .domain import uid
+from .naming import IdentityOption
 
 MODEL = os.getenv('AIHUBMIX_MODEL', 'deepseek-v4.1-flash-1017')
 PROMPT_VERSION = 'creation-v1'
@@ -31,10 +33,15 @@ class Scene(BaseModel):
     connection: str
 
 class Character(BaseModel):
+    model_config={'extra':'allow'}
     biography: str = ''
     summary: str = ''
     mentions: list[dict] = Field(default_factory=list)
     namingOrigin: str = 'legacy'
+    roleType: Literal['named','role','group','unknown'] = 'unknown'
+    depictionScope: Literal['depicted','background','unknown'] = 'unknown'
+    visualHints: list[dict] = Field(default_factory=list)
+    identityOptions: list[IdentityOption] = Field(default_factory=list,max_length=8)
     name: str
     identity: str
     relationships: str
@@ -59,10 +66,10 @@ class Findings(BaseModel):
 SCHEMAS = {'extract': Characters, 'outline': Outline, 'scene': Content, 'classify': Content, 'rewrite': Content, 'check': Findings}
 
 async def generate(task, project, scene_id='', unit_id='', instruction=''):
-    if not os.getenv('AIHUBMIX_API_KEY'):
-        raise ValueError('未配置 AIHUBMIX_API_KEY。请在本地后端环境配置后重启。')
+    settings=config.model_settings()
     schema = SCHEMAS[task]
     system = '''你是古画创作助手。仅以用户提供的资料和已确认画面观察为依据，资料本身不代表真相。不得编造来源、引文或ID。输出严格JSON。区分supported有依据、inference解释推测、fiction虚构；事实和虚构拆成独立单元。dialogue单元text只放说话原句，不混入说话人称谓或动作；动作另列action单元。具体对白、心理、动机默认fiction，除非原文直接记录。inference必须说明推导。引用须带sourceId、sourceVersion及逐字quote，或annotationId及对应description。遵守历史边界；人物知识只使用已确认设定；按project.sceneCount生成连续故事。不要修改锁定内容。'''
+    system += 'creativeNaming是采用的创作称谓，可直接用于称呼；basis为literature_interpretation时，原身份判断仍属文献推测，不因称谓变化成为已核实事实。'
     context=copy.deepcopy(project)
     inputs=project.get('materialInputs',{})
     if any(inputs.get(k,'').strip() for k in ('background','relationships','narrative')):
@@ -79,12 +86,12 @@ async def generate(task, project, scene_id='', unit_id='', instruction=''):
         context['observations']=[o for o in context.get('observations',[]) if o.get('confirmed') and not o.get('stale')]
         context['matches']=[m for m in context.get('matches',[]) if m.get('confirmed')]
     prompt = json.dumps(dict(task=task, project=context, sceneId=scene_id, unitId=unit_id, instruction=instruction, outputSchema=schema.model_json_schema()), ensure_ascii=False)
-    client = AsyncOpenAI(api_key=os.environ['AIHUBMIX_API_KEY'], base_url=os.getenv('AIHUBMIX_BASE_URL', 'https://aihubmix.com/v1'), timeout=90, max_retries=0)
+    client = AsyncOpenAI(api_key=settings.api_key, base_url=settings.base_url, timeout=90, max_retries=0)
     messages = [{'role':'system','content':system}, {'role':'user','content':prompt}]
     try:
         for attempt in range(2):
-            result = await client.chat.completions.create(model=MODEL, messages=messages, max_tokens=6500, stream=False)
-            raw = result.choices[0].message.content or ''
+            result = await client.chat.completions.create(model=settings.model, messages=messages, **options(settings.model), stream=False)
+            raw = json_text(result)
             try:
                 value = schema.model_validate_json(raw.strip().removeprefix('```json').removeprefix('```').removesuffix('```').strip()).model_dump()
                 if task == 'outline' and len(value['scenes']) != project.get('sceneCount', 3):

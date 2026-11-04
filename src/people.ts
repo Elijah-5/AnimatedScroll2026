@@ -6,3 +6,13 @@ export function personState(project:any,a:any){
  return {key:'pending',label:'待确认'}
 }
 export function profile(c:any){if(!c)return '未关联资料人物。';if(c.namingOrigin==='creator')return '创作者命名，资料未提供历史身份／经历。';return c.summary||[c.identity,c.biography].filter(Boolean).join('；')||'资料中提及；未提供具体身份／经历。'}
+
+export function instanceName(project:any,a:any){
+ if(!a)return '人物'
+ const c=project.characters.find((c:any)=>c.id===a.characterId)
+ const index=project.annotations.findIndex((v:any)=>v.id===a.id)+1
+ if(!c)return (a.kind==='character'?'人物':'区域')+' '+index
+ if(c.roleType!=='group')return c.name
+ const members=project.annotations.filter((v:any)=>v.kind==='character'&&v.characterId===c.id)
+ return c.name+'('+(members.findIndex((v:any)=>v.id===a.id)+1)+')'
+}
