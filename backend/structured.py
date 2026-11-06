@@ -4,6 +4,7 @@ import re
 from pydantic import BaseModel, Field
 from typing import Literal
 from .task_runtime import digest
+from .library_review import Contradiction, refresh
 
 FIELDS={'name':'作品名称','artist':'作者','period':'绘画年代','storyPeriod':'故事时代','medium':'材质与技法','dimensions':'尺寸','collection':'收藏机构','accession':'馆藏编号','description':'作品说明','circulation':'作品流传','storyOneLiner':'画中故事'}
 CATEGORIES={'supported','inference','uncertain','fiction'}
@@ -47,14 +48,14 @@ def seed(p,tables=None):
     chars += [dict(id=c['id'],draft=c) for c in p.get('characters',[]) if not any(r['id']==c['id'] for r in chars)]
     for r in chars:
         c=r['draft'];rid=r['id'];rr=refs(c.get('mentions',[]));annotations=[a['id'] for a in mat.get('annotations',[]) if a.get('characterId')==rid]
-        out['people'].append(dict(id=rid,characterId=rid,name=c['name'],roleType=c.get('roleType','role'),scope=c.get('depictionScope','unknown'),contextRoles=[],annotationIds=annotations,referenceIds=rr))
+        out['people'].append(dict(id=rid,characterId=rid,name=c['name'],summary=c.get('summary',''),aliases=c.get('aliases',[]),inclusionDecision=c.get('inclusionDecision'),roleType=c.get('roleType','role'),scope=c.get('depictionScope','unknown'),contextRoles=[],annotationIds=annotations,referenceIds=rr))
         for aspect,field in [('身份','identity'),('行事','biography'),('关系','relationships'),('概述','summary')]:
             if c.get(field):out['statements'].append(dict(id=stable('line',[rid,field]),personId=rid,aspect=aspect,text=c[field],category='uncertain' if not rr else 'inference',referenceIds=rr,origin='profile',profileField=field))
     for c in analysis.get('people',[]):
         matches=[v for v in out['people'] if v['name']==c['name'] and v['scope']==c.get('scope','unknown')]
         if len(matches)==1:continue
         rid=stable('person',[p['id'],c.get('id') or c['name'],c.get('scope'),c.get('contextRoles')])
-        out['people'].append(dict(id=rid,characterId='',name=c['name'],roleType=c.get('roleType','named'),scope=c.get('scope','unknown'),contextRoles=c.get('contextRoles',[]),annotationIds=[],referenceIds=refs(c.get('references',[]))))
+        out['people'].append(dict(id=rid,characterId='',name=c['name'],summary=c.get('summary',''),aliases=c.get('aliases',[]),depictionReferences=c.get('depictionReferences',[]),roleType=c.get('roleType','named'),scope=c.get('scope','unknown'),contextRoles=c.get('contextRoles',[]),annotationIds=[],referenceIds=refs(c.get('references',[]))))
     for a in mat.get('annotations',[]):
         if not a.get('confirmed') or not a.get('description') or not any(v['id']==a.get('characterId') for v in out['people']):continue
         text=a['description'];sid=stable('observation',[p['id'],mat.get('image'),a['id'],text,{k:a.get(k) for k in ('x','y','w','h')}]);version=max(1,mat.get('imageVersion',0))
@@ -134,7 +135,7 @@ def finish(out):
     for key in ('people','events','relations','statements','research','evidence'):
         out[key]=list({r['id']:r for r in out[key]}.values())
     out['conflicts']=list({r['id']:r for r in out.get('conflicts',[])}.values())
-    return out
+    return refresh(out)
 
 class SuggestedField(BaseModel):
     field:str
@@ -160,10 +161,12 @@ class Suggestion(BaseModel):
     statements:list[SuggestedRow]=Field(default_factory=list)
     relations:list[SuggestedRow]=Field(default_factory=list)
     research:list[SuggestedRow]=Field(default_factory=list)
+    contradictions:list[Contradiction]=Field(default_factory=list)
 
 def apply_suggestion(out,result):
     result=Suggestion.model_validate(result).model_dump();known={e['id'] for e in out['evidence']};people={p['id'] for p in out['people']}
     for collection,rows in result.items():
+        if collection=='contradictions':continue
         for row in rows:
             if not set(row['referenceIds'])<=known:raise ValueError('结构化结果引用了不存在的原文依据')
             cited=' '.join(e.get('quote','')+' '+e.get('edition','')+' '+e.get('sourceTitle','') for e in out['evidence'] if e['id'] in row['referenceIds'])
@@ -206,6 +209,19 @@ def merge(existing,incoming):
         for row in existing.get(key,[]):new.setdefault(identity(row),copy.deepcopy(row))
         out[key]=list(new.values())
     if existing.get('legacyTables'):out.setdefault('legacyTables',copy.deepcopy(existing['legacyTables']))
+    if existing.get('summaryOverrides'):out['summaryOverrides']=copy.deepcopy(existing['summaryOverrides'])
+    out['personRedirects']=copy.deepcopy(existing.get('personRedirects',{}))
+    out['mergedNames']=copy.deepcopy(existing.get('mergedNames',{}))
+    redirects={r['id']:out['personRedirects'].get(r['id']) or out['mergedNames'].get(r['name']) for r in out['people']}
+    redirects={k:v for k,v in redirects.items() if v and v!=k and any(r['id']==v for r in out['people'])}
+    for row in out['people']:
+        if row['id'] in redirects:
+            keep=next(r for r in out['people'] if r['id']==redirects[row['id']])
+            keep['referenceIds']=list(dict.fromkeys(keep.get('referenceIds',[])+row.get('referenceIds',[])))
+    out['people']=[r for r in out['people'] if r['id'] not in redirects]
+    from .feedback import rebind
+    rebind(out['statements'],redirects);rebind(out['relations'],redirects)
+    out['relations']=[r for r in out['relations'] if r['fromId']!=r['toId']]
     out['importWarnings']=list({digest(r):r for r in out.get('importWarnings',[])+existing.get('importWarnings',[])}.values())
     versions=out.get('legacyVersions',[])+copy.deepcopy(existing.get('legacyVersions',[]))
     if versions:out['legacyVersions']=list({digest(v):v for v in versions}.values())
@@ -232,7 +248,32 @@ async def organize(p,cache_get=lambda k:None,cache_put=lambda k,v:None,base=None
             if not fresh:cache_put(key,None)
             raise
         if fresh:cache_put(key,result)
-    return merge(existing,base)
+    result=merge(existing,base)
+    # One explicit cross-source review, after all extraction batches have been
+    # assembled. Value inequality alone never promotes a legacy difference.
+    from .library_review import conflict_context,install_contradictions
+    claims=conflict_context(result)
+    # Keep claims about the same field adjacent across bounded calls.
+    claims.sort(key=lambda row:row['field'])
+    for group in bounded_groups(claims,limit=18000):
+        tr.checkpoint.get()()
+        ids={rid for row in group for rid in row.get('referenceIds',[])}
+        if len(ids)<2:continue
+        ctx=dict(mode='cross_source_review',title=result['artwork']['name']['value'],claims=group,
+                 evidence=[e for e in result['evidence'] if e['id'] in ids])
+        key='contradictions-v1-'+digest([settings.provider,settings.base_url,settings.model,ctx])
+        review=cache_get(key)
+        if review is None:
+            review=Suggestion.model_validate(await ask(ctx)).model_dump()
+            install_contradictions(result,review.get('contradictions',[]));cache_put(key,review)
+        else:install_contradictions(result,review.get('contradictions',[]))
+    from .people_policy import duplicate_groups
+    from .feedback import merge_people
+    for group in duplicate_groups(result):
+        if group['safe']:merge_people(p,result,group['personIds'],group['survivorId'])
+    from . import workspace as ws
+    ws.mirror(p)
+    return refresh(result)
 
 def install_draft(p,value):
     validate(value)
@@ -278,7 +319,8 @@ def view(p,published=True):
     return seed(frozen)
 
 def role_context(p,cid):
-    from .consumption import confirmed
+    from .consumption import confirmed,character_id
+    cid=character_id(p,cid)
     person=confirmed(p,'character',cid);data=view(p)
     rows=[r for r in data['statements'] if r.get('personId')==cid and (not r.get('profileField') or r['text']==person.get(r['profileField']))]
     ids={ref for r in rows for ref in r.get('referenceIds',[])}
@@ -286,6 +328,7 @@ def role_context(p,cid):
 
 def compact(value):
     result={k:copy.deepcopy(v) for k,v in value.items() if k not in ('sources','legacyTables','legacyVersions')}
+    result['conflicts']=[c for c in result.get('conflicts',[]) if c.get('kind')=='contradiction' and c.get('status')!='retired']
     result['sources']=[{k:s.get(k) for k in ('id','version','title','citation','sourceType')} for s in value['sources']]
     return result
 
@@ -307,7 +350,7 @@ def material_sources(material):
 def preview(p,db):
     from .history import read_tables
     mat=p['workspace']['entities']['material:main']['draft']
-    if mat.get('structured'):return copy.deepcopy(mat['structured'])
+    if mat.get('structured'):return refresh(copy.deepcopy(mat['structured']))
     with db() as conn:tables=read_tables(conn,p['id'])
     out=seed(p,tables if tables['works'] else None)
     pending=p['workspace'].get('historyLibrary',{}).get('draft')
@@ -376,7 +419,9 @@ def install(app,get,save,db):
     @app.get('/api/projects/{pid}/structured')
     def inspect(pid:str):
         p=get(pid);r=p['workspace']['entities']['material:main']
-        return dict(projectId=pid,version=p['version'],revision=r['revision'],draft=preview(p,db),derivedPreview=not bool(r['draft'].get('structured')),fields=FIELDS)
+        value=preview(p,db)
+        from .people_policy import view as people_view
+        return dict(projectId=pid,version=p['version'],revision=r['revision'],draft=value,peoplePolicy=people_view(p,value),derivedPreview=not bool(r['draft'].get('structured')),fields=FIELDS)
     @app.middleware('http')
     async def retired_history(request,call_next):
         if '/history/' in request.url.path and request.method in ('POST','PUT','PATCH','DELETE'):

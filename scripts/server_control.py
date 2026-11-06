@@ -67,12 +67,12 @@ def active_tasks():
     with sqlite3.connect(path.as_uri()+'?mode=ro',uri=True) as c:
         tables={v[0] for v in c.execute("SELECT name FROM sqlite_master WHERE type='table'")}
         rows=[]
-        for table in ('tasks','studio_jobs','video_jobs','media_preview_jobs'):
+        for table in ('tasks','studio_jobs','feedback_jobs','video_jobs','media_preview_jobs','experiment_runs'):
             if table not in tables:continue
             for body, in c.execute('SELECT body FROM '+table):
                 value=json.loads(body)
                 if value.get('status',value.get('state')) in ('queued','running','submitting','pending','downloading'):
-                    rows.append(value.get('kind') or value.get('task') or '视频任务')
+                    rows.append('用户实验记录' if table=='experiment_runs' else value.get('kind') or value.get('task') or '视频任务')
     folder=ROOT/'data/experience-preparations'
     if folder.exists() and listeners(8000):
         for file in folder.glob('*.json'):

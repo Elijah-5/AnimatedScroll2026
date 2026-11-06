@@ -352,11 +352,17 @@ def bind_summaries(output,claims):
     return output
 
 async def organize(p,request,cache_get,cache_put,progress,stats):
-    target=request['targetArtwork'].strip();rows=selected_sources(p,request);chunks=split_chunks(rows)
+    target=request['targetArtwork'].strip();rows=selected_sources(p,request)
+    chunks=[chunk for did in dict.fromkeys(r['documentId'] for r in rows) for chunk in split_chunks([r for r in rows if r['documentId']==did])]
+    from .config import model_settings
+    settings=model_settings(require_key=False)
     if not chunks:raise ValueError('所选文献没有可整理的文字，请检查提取结果或显式执行OCR')
-    outputs=[];coverage=[]
+    outputs=[];coverage=[];failed_pages=[]
     for i,chunk in enumerate(chunks):
-        tr.checkpoint.get()();key=tr.digest([PROMPT_VERSION,VALIDATION_VERSION,target,chunk]);cached=cache_get(key)
+        tr.checkpoint.get()()
+        content=[{k:v for k,v in fragment.items() if k!='sourceVersion'} for fragment in chunk]
+        key=tr.digest(['source-extraction-v2',settings.provider,settings.base_url,settings.model,PROMPT_VERSION,VALIDATION_VERSION,target,content]);cached=cache_get(key)
+        if cached is not None:cached=bind_extracted(cached,chunk,target)
         if cached is None:
             for version in ('evidence-3','evidence-2'):
                 previous=cache_get(tr.digest([PROMPT_VERSION,version,target,chunk]))
@@ -367,8 +373,18 @@ async def organize(p,request,cache_get,cache_put,progress,stats):
         else:
             payload=dict(task='整理这一批原文中的有用信息。不是故事生成。claims区分画面描述description、资料转述historical_account、作者解释interpretation、不确定观点uncertain；narrative只取已记载的事件转述。people必须提取角色称谓和群体，并识别作者、题跋者、收藏者、研究者、其他作品人物、历史背景和本画人物。scope=depicted仅限原文明示本画中出现，artwork填目标画名并给depictionReferences；“可能在侧”等不是确定出现，scope=unknown。背景和未确定姓名只留资料。参考图版中的人物不能归到目标画作。人物身份、经历只用本批材料；原文推测官职保留限定语，不当成确定身份。name用原文中的姓名或称谓。别名只在明确同人且同一引文有两称呼时关联。references用已有sourceId和逐字短quote，不使用省略号、不跨片段拼接；人物至少一个引用。visualHints只用本画的服饰、动作、位置及邻人；required或exclusive必须原文明示且无推测。indirectSource标明论文转引的史料，不声称核对过原书。',targetArtwork=target,passages=chunk)
             payload['task']+='\n'+naming.INSTRUCTION
-            output=await ask(Extracted,payload,stats,lambda v:bind_extracted(v,chunk,target));cache_put(key,output)
+            try:
+                output=await ask(Extracted,payload,stats,lambda v:bind_extracted(v,chunk,target));cache_put(key,output)
+            except tr.StaleTask:
+                raise
+            except Exception as exc:
+                pages=[dict(documentId=f['documentId'],page=f['page']) for f in chunk]
+                failed_pages+=pages
+                coverage.append(dict(batch=i+1,pages=pages,failed=True,reason=str(exc)[:240]))
+                if len(chunks)==1:raise
+                continue
         outputs.append(output);coverage.append(dict(batch=i+1,pages=[dict(documentId=f['documentId'],page=f['page']) for f in chunk],cached=bool(cached)))
+    if not outputs:raise ValueError('所选来源均未能完成提取；已完成批次缓存保留，请重试')
     claims,people=merge_extractions(outputs)
     # Reduce derived claims in bounded groups, never re-send the whole PDF.
     compact=[dict(id=c['id'],text=c['text'],kind=c['kind'],assertion=c['assertion']) for c in claims]
@@ -447,7 +463,7 @@ async def organize(p,request,cache_get,cache_put,progress,stats):
         partial=next_parts
     if len(partial)>1:raise ValueError('摘要仍过长，请缩小文献范围；已完成批次保留')
     summaries=partial[0] if partial else {k:[] for k in KINDS}
-    return dict(id=uid(),status='pending',targetArtwork=target,inputHash=tr.digest(inputs(p,request)),request=request,claims=claims,people=people,summaries=summaries,coverage=coverage,selectedPages=[dict(documentId=r['documentId'],page=r['page'],hasText=bool(r['source'] and r['source']['text'].strip())) for r in rows],validationWarnings=[w for o in outputs for w in o.get('validationWarnings',[])],modelCalls=stats.get('modelCalls',0),promptVersion=PROMPT_VERSION,time=tr.now())
+    return dict(id=uid(),status='pending',targetArtwork=target,inputHash=tr.digest(inputs(p,request)),request=request,claims=claims,people=people,summaries=summaries,coverage=coverage,selectedPages=[dict(documentId=r['documentId'],page=r['page'],hasText=bool(r['source'] and r['source']['text'].strip())) for r in rows],failedPages=failed_pages,analyzedSources=[dict(id=r['source']['id'],version=r['source']['version'],documentId=r['documentId']) for r in rows if r['source']],validationWarnings=[w for o in outputs for w in o.get('validationWarnings',[])],modelCalls=stats.get('modelCalls',0),promptVersion=PROMPT_VERSION,time=tr.now())
 
 def relevant_sources(sources,refs):
     """Pass only cited original spans downstream, retaining original source IDs."""
@@ -469,10 +485,9 @@ def evidence_refs(value):
     if all(k in value for k in ('sourceId','sourceVersion','quote')):return [value]
     return [r for v in value.values() for r in evidence_refs(v)]
 
-def character_allowed(c):
-    # New literature roles require explicit depiction; legacy unknown roles remain
-    # compatible until the creator reviews their scope.
-    return c.get('depictionScope')!='background' and (c.get('namingOrigin')!='document' or c.get('depictionScope')=='depicted')
+def character_allowed(c,project=None):
+    from .people_policy import character_allowed as allowed
+    return allowed(c,project)
 
 def clean_book_locators(text,sources):
     """Do not let a generated volume/chapter number masquerade as supplied metadata."""
@@ -551,5 +566,6 @@ def adopt(project,payload):
             else:
                 for v in value.values():rebind(v)
     for value in (p['documentAnalysis'],p.get('materialInputOrigins',{}),[c for c in p['characters'] if c.get('documentAnalysisId')==analysis['id']]):rebind(value)
+    p['documentAnalysis']['analyzedSources']=[dict(id=r['source']['id'],version=r['source']['version'],documentId=r['documentId']) for r in selected_sources(p,analysis['request']) if r['source']]
     p['documentAnalysis']['inputHash']=tr.digest(inputs(p,analysis['request']))
     return p

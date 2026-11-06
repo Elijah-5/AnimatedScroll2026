@@ -33,6 +33,6 @@ export function relationshipGraph(people:any[],relations:any[],clues:any[],inclu
  for(const r of relations)add(r,{kind:'material',id:r.id,state:r.state||'draft',referenceIds:r.referenceIds||[]})
  for(const c of clues.filter(c=>c.state!=='deleted'))for(const r of c.draft?.relations||[])add(r,{kind:'clue',id:c.id,state:c.published?.relations?.some((old:any)=>JSON.stringify(old)===JSON.stringify(r))?'confirmed':'draft',references:r.quote?[r]:[]})
  const connected=new Set([...edges.values()].flatMap(e=>[e.fromId,e.toId]))
- const nodes=people.filter(p=>p.characterId||(includeBackground&&connected.has(p.id))),visible=new Set(nodes.map(p=>p.id))
+ const nodes=people.filter(p=>(p.castEligible??!!p.characterId)||(includeBackground&&connected.has(p.id))),visible=new Set(nodes.map(p=>p.id))
  return {nodes,edges:[...edges.values()].filter(e=>visible.has(e.fromId)&&visible.has(e.toId)),unresolved,hidden:[...edges.values()].filter(e=>!visible.has(e.fromId)||!visible.has(e.toId)).length}
 }

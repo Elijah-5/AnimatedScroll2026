@@ -304,6 +304,8 @@ def assign(p,path,value,delete=False):
 
 def compact_project(p,jobs=None):
     result=dict(p);w=dict(p['workspace'])
+    from .people_policy import view as people_view
+    result['peoplePolicy']=people_view(p)
     w.pop('revisionArchive',None);w.pop('historyLibrary',None);w.pop('batchReceipts',None)
     w['entities']={k:{f:v for f,v in r.items() if f not in ('history','basisWarnings')} for k,r in w['entities'].items()}
     if jobs is not None:w['jobs']=jobs

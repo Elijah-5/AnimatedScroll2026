@@ -23,7 +23,7 @@ from fastapi.responses import FileResponse
 from PIL import Image, ImageOps
 from pydantic import BaseModel, Field
 
-from . import consumption as consume, workspace as ws, video
+from . import consumption as consume, workspace as ws, video, video_generation, video_budget
 from .cutouts import valid_box
 from .task_runtime import digest
 
@@ -200,7 +200,9 @@ def install(app,get,db,data):
     def jobs(pid=None):
         with db() as c:
             return [json.loads(r[0]) for r in c.execute('SELECT body FROM media_preview_jobs'+(' WHERE project=?' if pid else ''),(pid,) if pid else ())]
-    def budget():
+    def budget(pid=None,kind=None):
+        if kind=='video' and pid:
+            with db() as c:return video_budget.summary(c,pid)
         rows=jobs();used=sum(j.get('reservedCny',0) for j in rows)
         return dict(limitCny=LIMIT_CNY,reservedCny=round(used,4),remainingCny=round(max(0,LIMIT_CNY-used),4),
                     blocked=any(j['status'] in ('submission_unknown','cost_unknown') for j in rows))
@@ -325,6 +327,7 @@ def install(app,get,db,data):
         p=get(pid)
         if p['version']!=req.version:raise HTTPException(409,'内容已变化，请重新查看预览费用')
         if p.get('archived'):raise HTTPException(422,'项目已归档')
+        if req.kind=='video' and video_generation.active() is None:raise HTTPException(503,'视频生成已迁移至正式分镜接口；模型待接入，本次不扣额度')
         allowed=set(scoped_ids(p,req.scope))
         if len(set(req.storyboardIds))!=len(req.storyboardIds) or not set(req.storyboardIds)<=allowed:raise HTTPException(422,'所选分镜不属于当前生成范围')
         inputs=[]
@@ -350,7 +353,7 @@ def install(app,get,db,data):
         reserve=round(unit_usd*price['fx']*MARGIN,4)
         q=dict(id=digest([pid,req.model_dump(),price,time.time()])[:32],projectId=pid,createdAt=time.time(),scope=req.scope,kind=req.kind,price=price,inputs=inputs,unitReservedCny=reserve,totalReservedCny=round(reserve*len(inputs),4),version=p['version'])
         with db() as c:c.execute('INSERT INTO media_preview_quotes VALUES (?,?,?)',(q['id'],pid,json.dumps(q,ensure_ascii=False)))
-        return dict(quoteId=q['id'],kind=req.kind,model=price['model'],duration=5 if req.kind=='video' else 0,resolution='480P' if req.kind=='video' else '',unitUsd=price['unitUsd'],fx=price['fx'],estimatedCny=round(unit_usd*price['fx']*len(inputs),4),reservedCny=q['totalReservedCny'],budget=budget(),items=[dict(storyboardId=v['storyboardId'],title=v['title'],prompt=prompt(v),region=v['region'],narrationText=v['narrationText'],referenceCount=len(v['references'])) for v in inputs])
+        return dict(quoteId=q['id'],kind=req.kind,model=price['model'],duration=5 if req.kind=='video' else 0,resolution='480P' if req.kind=='video' else '',unitUsd=price['unitUsd'],fx=price['fx'],estimatedCny=round(unit_usd*price['fx']*len(inputs),4),reservedCny=q['totalReservedCny'],budget=budget(pid,req.kind),items=[dict(storyboardId=v['storyboardId'],title=v['title'],prompt=prompt(v),region=v['region'],narrationText=v['narrationText'],referenceCount=len(v['references'])) for v in inputs])
 
     @app.post('/api/projects/{pid}/media-previews')
     async def submit(pid:str,req:Submit):
@@ -362,13 +365,14 @@ def install(app,get,db,data):
             with db() as c:row=c.execute('SELECT body FROM media_preview_quotes WHERE id=? AND project=?',(req.quoteId,pid)).fetchone()
             if not row:raise HTTPException(404,'报价不存在')
             q=json.loads(row[0]);p=get(pid)
+            if q['kind']=='video' and video_generation.active() is None:raise HTTPException(503,'视频模型尚未接入；本次未提交或扣额度')
             if time.time()-q['createdAt']>900:raise HTTPException(409,'报价已过期，请重新查看费用')
             if p.get('archived'):raise HTTPException(422,'项目已归档')
             for value in q['inputs']:
                 try:current,_=snapshot(p,value['storyboardId'],data())
                 except (ValueError,KeyError) as exc:raise HTTPException(409,'分镜依据已变化，请重新预览') from exc
                 if current['fingerprint']!=value['fingerprint']:raise HTTPException(409,'分镜依据已变化，请重新预览')
-            old=jobs();b=budget()
+            old=jobs(pid) if q['kind']=='video' else jobs();b=budget(pid,q['kind'])
             if q['kind']!='crop' and b['blocked']:raise HTTPException(409,'有提交状态或费用待核实，暂停新增付费请求')
             # A new quote cannot silently create a second paid take of the same content.
             def duplicate(j,v):
@@ -390,11 +394,13 @@ def install(app,get,db,data):
                 created.append(j)
             with db() as c:
                 c.execute('BEGIN IMMEDIATE')
-                locked_jobs=[json.loads(r[0]) for r in c.execute('SELECT body FROM media_preview_jobs')]
+                video_budget.lock_project(c,pid)
+                locked_jobs=[json.loads(r[0]) for r in c.execute('SELECT body FROM media_preview_jobs'+(' WHERE project=?' if q['kind']=='video' else ''),(pid,) if q['kind']=='video' else ())]
                 if q['kind']!='crop' and any(j['status'] in ('submission_unknown','cost_unknown') for j in locked_jobs):raise HTTPException(409,'付费请求状态待核实')
                 if any(duplicate(j,v) for j in locked_jobs for v in q['inputs']):raise HTTPException(409,'该内容已有同类预览任务')
                 reserved=sum(j.get('reservedCny',0) for j in locked_jobs)
-                if reserved+q['totalReservedCny']>LIMIT_CNY:raise HTTPException(422,'本次提交会超过 ¥10 总预算')
+                if q['kind']=='video':video_budget.require(c,pid,count=len(created),amount=q['totalReservedCny'])
+                elif reserved+q['totalReservedCny']>LIMIT_CNY:raise HTTPException(422,'本次提交会超过 ¥10 总预算')
                 for j in created:c.execute('INSERT INTO media_preview_jobs VALUES (?,?,?)',(j['id'],pid,json.dumps(j,ensure_ascii=False)))
             launch(created[0]);return dict(jobs=[public(j) for j in created],budget=budget())
 
@@ -410,6 +416,7 @@ def install(app,get,db,data):
                 pending=sorted([r for r in jobs(pid) if r['batchId']==j['batchId'] and r['status']=='waiting_review'],key=lambda r:r['createdAt'])
                 if pending:
                     following=pending[0]
+                    if following['kind']=='video' and video_generation.active() is None:raise HTTPException(503,'视频模型尚未接入，不会提交后续视频任务')
                     if following['kind']!='crop' and budget()['blocked']:raise HTTPException(409,'付费请求状态待核实，未提交下一条')
                     following.update(status='queued',message='等待提交');store(following);launch(following)
             return public(j)

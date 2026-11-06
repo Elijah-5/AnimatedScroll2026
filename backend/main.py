@@ -31,10 +31,14 @@ def db():
     conn.execute('CREATE TABLE IF NOT EXISTS projects (id TEXT PRIMARY KEY, body TEXT)')
     conn.execute('CREATE TABLE IF NOT EXISTS events (id TEXT PRIMARY KEY, project TEXT, time TEXT, action TEXT, before TEXT, after TEXT, meta TEXT)')
     conn.execute('CREATE TABLE IF NOT EXISTS document_cache(key TEXT PRIMARY KEY,body TEXT)')
-    for table in ('video_jobs','studio_jobs','experience_sessions','experience_turns'):
+    for table in ('video_jobs','studio_jobs','feedback_jobs','experience_sessions','experience_turns'):
         conn.execute(f'CREATE TABLE IF NOT EXISTS {table}(id TEXT PRIMARY KEY, project TEXT, body TEXT)')
     from .media_previews import schema as preview_schema
     preview_schema(conn)
+    from .video_budget import schema as video_budget_schema
+    video_budget_schema(conn)
+    from .experiments import schema as experiment_schema
+    experiment_schema(conn)
     from . import catalog
     catalog.schema(conn)
     from .history_schema import schema as history_schema
@@ -118,6 +122,8 @@ def save(project, expected, action, meta=None, transaction_hook=None):
         from .structured import synchronize as sync_structured
         sync_structured(conn,old,project)
         read_models.write(conn,project)
+        from .experiments import record_save
+        record_save(conn,old,project,action,meta)
     return project
 
 @app.get('/api/projects')
@@ -361,11 +367,17 @@ install_completions(app,get,save,db,lambda:DATA)
 from . import catalog,video,experience,narrative
 catalog.install(app,get,db)
 video.install(app,get,save,db,lambda:DATA)
+from . import video_budget
+video_budget.install(app,get,db)
+from . import experiments
+experiments.install(app,get,db,lambda:DATA)
 from . import media_previews
 media_previews.install(app,get,db,lambda:DATA)
 experience.install(app,get,db,lambda:DATA)
 from . import structured
 structured.install(app,get,save,db)
+from . import feedback
+feedback.install(app,lambda pid:get(pid,decorate=False),save,db)
 narrative.install(app,get,save,db,lambda:DATA)
 from .history import install as install_history
 install_history(app,get,save,db)

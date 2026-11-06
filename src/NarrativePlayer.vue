@@ -1,48 +1,46 @@
 <script setup lang="ts">
-import {computed,nextTick,onMounted,onUnmounted,ref} from 'vue'
+import {computed,nextTick,onMounted,onUnmounted,ref,watch} from 'vue'
 import {narrationSentences} from './experiencePresentation'
-const props=defineProps<{media:any;image:string}>(),emit=defineEmits<{close:[]}>()
-const video=ref<HTMLVideoElement>(),paused=ref(false),index=ref(0),voiceError=ref(''),playError=ref('')
-const sentences=computed(()=>narrationSentences(props.media.narrationText||''))
-const subtitle=computed(()=>sentences.value[index.value]||'')
-const region=computed(()=>props.media.region||props.media.storyboard?.region||{x:0,y:0,w:1,h:1})
-const cropStyle=computed(()=>({width:100/region.value.w+'%',maxWidth:'none',left:-100*region.value.x/region.value.w+'%',top:-100*region.value.y/region.value.h+'%',height:100/region.value.h+'%'}))
-let sequence=0,utterance:SpeechSynthesisUtterance|undefined,disposed=false,timeout:ReturnType<typeof setTimeout>|undefined
+const props=defineProps<{media:any;image:string;position?:number;total?:number;continuous?:boolean}>(),emit=defineEmits<{close:[];return:[];step:[direction:number];continuous:[value:boolean]}>()
+const video=ref<HTMLVideoElement>(),root=ref<HTMLElement>(),paused=ref(false),index=ref(0),voiceError=ref(''),playError=ref(''),visualReady=ref(false),exiting=ref(false),narrationDone=ref(false),visualDone=ref(false)
+const sentences=computed(()=>narrationSentences(props.media.narrationText||'')),subtitle=computed(()=>sentences.value[Math.min(index.value,Math.max(0,sentences.value.length-1))]||'')
+const complete=computed(()=>narrationDone.value&&visualDone.value),mediaLabel=computed(()=>props.media.videoUrl?'分镜视频':props.media.imageUrl?'分镜图像':'原画叙事 · 非生成视频')
+let sequence=0,utterance:SpeechSynthesisUtterance|undefined,disposed=false,captionTimer:ReturnType<typeof setTimeout>|undefined,closeTimer:ReturnType<typeof setTimeout>|undefined,nextTimer:ReturnType<typeof setTimeout>|undefined
 const speech=()=>typeof window!=='undefined'&&'speechSynthesis' in window?window.speechSynthesis:null
-function cancel(){sequence++;clearTimeout(timeout);speech()?.cancel();utterance=undefined;video.value?.pause()}
+function cancel(){sequence++;clearTimeout(captionTimer);clearTimeout(nextTimer);speech()?.cancel();utterance=undefined;video.value?.pause()}
+function advance(token:number){if(disposed||token!==sequence||paused.value)return;index.value++;speak(token)}
+function timedText(token:number){clearTimeout(captionTimer);captionTimer=setTimeout(()=>advance(token),Math.max(2400,Math.min(9500,(sentences.value[index.value]?.length||0)*180)))}
 function speak(token:number){
- if(disposed||token!==sequence||index.value>=sentences.value.length)return
+ if(disposed||token!==sequence)return
+ if(index.value>=sentences.value.length){narrationDone.value=true;return}
  const synth=speech(),voice=synth?.getVoices().find(v=>/^zh(-|_)/i.test(v.lang)&&v.localService)
- if(!synth||!voice){voiceError.value='设备没有可用的本地中文语音，当前显示文字讲解。';return}
- const u=new SpeechSynthesisUtterance(sentences.value[index.value]);utterance=u;u.voice=voice;u.lang=voice.lang;u.rate=.95
- u.onend=()=>{if(token===sequence&&!paused.value){index.value++;speak(token)}}
- u.onerror=(event)=>{if(token===sequence&&event.error!=='canceled'&&event.error!=='interrupted')voiceError.value='中文朗读未能开始，可点击重播；文字讲解仍可阅读。'}
- synth.speak(u)
+ if(!synth||!voice){voiceError.value='当前使用文字讲解';timedText(token);return}
+ const u=new SpeechSynthesisUtterance(sentences.value[index.value]);utterance=u;u.voice=voice;u.lang=voice.lang;u.rate=.95;u.onend=()=>advance(token)
+ u.onerror=e=>{if(token===sequence&&e.error!=='canceled'&&e.error!=='interrupted'){voiceError.value='当前使用文字讲解';utterance=undefined;timedText(token)}};synth.speak(u)
 }
-async function start(){
- cancel();paused.value=false;index.value=0;voiceError.value='';playError.value='';const token=sequence
- await nextTick();if(disposed||token!==sequence)return
- if(video.value){video.value.currentTime=0;try{await video.value.play()}catch{playError.value='浏览器暂未开始播放，请点击“播放／继续”。'}}
- if(!speech()?.getVoices().length){timeout=setTimeout(()=>speak(token),350)}else speak(token)
+async function start(){cancel();paused.value=false;exiting.value=false;index.value=0;voiceError.value='';playError.value='';narrationDone.value=false;visualDone.value=!props.media.videoUrl;visualReady.value=!props.media.videoUrl&&!props.media.imageUrl;const token=sequence;await nextTick();if(disposed||token!==sequence)return
+ if(video.value){video.value.currentTime=0;try{await video.value.play()}catch{playError.value='点击播放继续观看'}}
+ if(!speech()?.getVoices().length)captionTimer=setTimeout(()=>speak(token),350);else speak(token)
 }
 async function toggle(){
- if(paused.value||playError.value){paused.value=false;playError.value='';speech()?.resume();if(!utterance)speak(sequence);try{await video.value?.play()}catch{playError.value='无法播放视频，可重播或阅读讲解。'}}
- else{paused.value=true;speech()?.pause();video.value?.pause()}
+ if(complete.value){await start();return}
+ if(paused.value||playError.value){paused.value=false;playError.value='';if(utterance)speech()?.resume();else speak(sequence);try{await video.value?.play()}catch{playError.value='视频暂时无法播放，仍可阅读讲解'}}
+ else{paused.value=true;clearTimeout(captionTimer);clearTimeout(nextTimer);speech()?.pause();video.value?.pause()}
 }
-function close(){cancel();emit('close')}
-function hidden(){if(document.hidden&&!paused.value){paused.value=true;speech()?.pause();video.value?.pause()}}
+function close(){if(exiting.value)return;cancel();exiting.value=true;emit('return');closeTimer=setTimeout(()=>emit('close'),matchMedia('(prefers-reduced-motion: reduce)').matches?0:420)}
+async function fullscreen(){const stage=root.value?.closest('.painting-viewer') as HTMLElement;if(!stage)return;try{if(document.fullscreenElement)await document.exitFullscreen();else await stage.requestFullscreen()}catch{playError.value='当前浏览器未开启全屏，仍可在原画中观看'}}
+function hidden(){if(document.hidden&&!paused.value){paused.value=true;clearTimeout(captionTimer);speech()?.pause();video.value?.pause()}}
+function failed(){playError.value='视频暂不可播放，显示原画与文字讲解';visualDone.value=true;visualReady.value=false}
+watch([complete,()=>props.continuous,paused],()=>{clearTimeout(nextTimer);if(complete.value&&props.continuous&&!paused.value&&(props.position||0)<(props.total||1)-1)nextTimer=setTimeout(()=>emit('step',1),1200)})
 onMounted(()=>{void start();document.addEventListener('visibilitychange',hidden)})
-onUnmounted(()=>{disposed=true;cancel();document.removeEventListener('visibilitychange',hidden)})
+onUnmounted(()=>{disposed=true;cancel();clearTimeout(closeTimer);document.removeEventListener('visibilitychange',hidden)})
+defineExpose({close})
 </script>
-<template><section class="narrative-player" :class="{paused}" role="region" :aria-label="media.title+'分镜讲解'">
- <header><b>{{media.title}}</b><button @click="close" aria-label="关闭分镜讲解">×</button></header>
- <div class="narrative-frame"><video v-if="media.videoUrl" ref="video" :src="media.videoUrl" muted playsinline preload="auto" @error="playError='视频载入失败，可关闭后重播或阅读讲解。'"/><img v-else-if="media.imageUrl" class="generated-image" :src="media.imageUrl" :alt="media.title"/><div v-else class="painting-crop"><img :src="image" :style="cropStyle" :alt="media.title+'对应原画区域'"/></div></div>
- <small>{{media.mediaLabel||(media.videoUrl?'分镜视频':'原画局部预览（非生成画面）')}}</small>
- <p class="narrative-subtitle" aria-live="polite">{{voiceError?media.narrationText:subtitle||media.narrationText}}</p>
- <p v-if="voiceError||playError" class="playback-note" role="status">{{voiceError||playError}}</p>
- <details><summary>完整讲解</summary><p>{{media.narrationText}}</p></details>
- <footer><button @click="toggle">{{paused||playError?'播放／继续':'暂停'}}</button><button @click="start">重播</button><button @click="close">关闭并返回全景</button></footer>
+<template><section ref="root" class="narrative-player" :class="{paused,exiting,'visual-ready':visualReady}" role="region" :aria-label="media.title+'分镜讲解'">
+ <div class="montage-visual"><video v-if="media.videoUrl" ref="video" :src="media.videoUrl" :data-storyboard-id="media.storyboardId" muted playsinline preload="auto" @loadeddata="visualReady=true" @ended="visualDone=true" @error="failed"/><img v-else-if="media.imageUrl" class="montage-still" :src="media.imageUrl" :alt="media.title" @load="visualReady=true" @error="visualReady=false;playError='图像暂不可用，显示原画与文字讲解'"></div>
+ <div class="montage-shading"/>
+ <header><div><small>第 {{(position||0)+1}} 镜<span v-if="total"> / {{total}}</span> · {{mediaLabel}}</small><h3>{{media.title}}</h3></div><div class="montage-header-actions"><button @click="fullscreen" aria-label="沉浸全屏观看">⛶ 全屏</button><button @click="close" aria-label="关闭分镜讲解">回到原画 ↙</button></div></header>
+ <div class="montage-caption"><p class="narrative-subtitle" aria-live="polite">{{subtitle||media.narrationText}}</p><small v-if="voiceError||playError" role="status">{{playError||voiceError}}</small><details><summary>完整讲解</summary><p>{{media.narrationText}}</p></details></div>
+ <footer><div class="montage-transport"><button :disabled="!position" @click="emit('step',-1)" aria-label="上一镜">←</button><button class="montage-toggle" @click="toggle">{{complete?'重新观看':paused||playError?'播放／继续':'暂停'}}</button><button @click="start" aria-label="重播分镜">↺</button><button :disabled="(position||0)>=(total||1)-1" @click="emit('step',1)" aria-label="下一镜">→</button></div><label><input type="checkbox" :checked="continuous" @change="emit('continuous',($event.target as HTMLInputElement).checked)">连续观赏</label></footer>
 </section></template>
-<style scoped>
-.narrative-player{pointer-events:auto;width:min(86%,620px);max-height:94%;overflow:auto;background:#fffcf3f5;border:1px solid #d6c7a6;border-radius:12px;box-shadow:0 12px 40px #302d2860;line-height:1.6;color:#3e473b}.narrative-player header{display:flex;justify-content:space-between;align-items:center;padding:8px 14px}.narrative-player header button{background:none;border:0;font-size:20px}.narrative-frame{width:100%;height:clamp(110px,15vw,220px);overflow:hidden;background:#e6dfcd}.narrative-frame video,.generated-image{width:100%;height:100%;object-fit:contain}.generated-image,.painting-crop{animation:slow-push 18s linear both}.paused .generated-image,.paused .painting-crop{animation-play-state:paused}.painting-crop{position:relative;width:100%;height:100%;overflow:hidden}.painting-crop img{position:absolute;object-fit:fill}.narrative-player>small{display:block;padding:4px 14px;font-size:10px;color:#8b7f67}.narrative-subtitle{padding:0 16px;margin:6px 0;font-size:14px;min-height:40px}.narrative-player details{font-size:11px;padding:0 16px}.narrative-player details p{white-space:pre-wrap}.playback-note{font-size:11px;color:#8e672c;padding:0 16px}.narrative-player footer{display:flex;gap:8px;padding:10px 14px}.narrative-player footer button{font-size:11px;padding:5px 10px}@keyframes slow-push{from{transform:scale(1)}to{transform:scale(1.08)}}@media(prefers-reduced-motion:reduce){.generated-image,.painting-crop{animation:none}}
-</style>
+<style scoped>.narrative-player{position:absolute;inset:0;width:100%;height:100%;pointer-events:auto;border:0;border-radius:0;background:transparent;color:#fff8e6;overflow:hidden;line-height:1.6;opacity:1;transition:opacity .42s ease}.narrative-player.exiting{opacity:0;pointer-events:none}.montage-visual{position:absolute;inset:0;opacity:0;transition:opacity 1.1s ease .45s;display:flex;align-items:center;justify-content:center}.visual-ready .montage-visual{opacity:1}.montage-visual video,.montage-visual img{width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain;display:block;mask-image:radial-gradient(ellipse 65% 75% at 50% 48%,#000 48%,transparent 100%)}.montage-still{animation:montage-breathe 22s ease-out both}.paused .montage-still{animation-play-state:paused}.montage-shading{position:absolute;inset:0;background:linear-gradient(180deg,#101b124d,transparent 24%,transparent 48%,#101a18a3 89%,#101a18b8);pointer-events:none}.narrative-player header{position:absolute;inset:0 0 auto;display:flex;justify-content:space-between;gap:20px;padding:22px 25px;align-items:start;z-index:2}.narrative-player header small{font-size:10px;letter-spacing:.12em;color:#e7dfc6b3;text-shadow:0 1px 4px #142820}.narrative-player h3{margin:4px 0;font-size:19px;font-weight:450;letter-spacing:.08em;color:#fff7dc;text-shadow:0 1px 8px #19271f66}.montage-header-actions{display:flex;gap:8px}.narrative-player button{border:1px solid #eee4ca44;background:#14221940;color:#f7efd8;font-size:11px;border-radius:20px;padding:7px 12px;backdrop-filter:blur(12px);cursor:pointer}.narrative-player button:hover{background:#14221985;border-color:#f0e6cd8c}.narrative-player button:focus-visible,.narrative-player summary:focus-visible{outline:2px solid #f4df9c;outline-offset:3px}.narrative-player button:disabled{opacity:.28;cursor:default}.montage-caption{position:absolute;bottom:83px;left:7%;right:7%;text-align:center;z-index:2}.narrative-subtitle{font-size:17px;font-weight:400;line-height:1.9;letter-spacing:.04em;color:#fff9e5;margin:0 auto 8px;max-width:760px;text-shadow:0 1px 9px #0e1b16,0 2px 3px #0e1b16;max-height:155px;overflow:auto}.montage-caption>small{font-size:10px;color:#e4dec8ad}.montage-caption details{position:relative;font-size:10px;color:#eee3c9a6}.montage-caption details summary{cursor:pointer;display:inline-block}.montage-caption details p{position:absolute;left:0;right:0;bottom:22px;max-height:190px;overflow:auto;background:#18271be8;border:1px solid #c9c7aa55;border-radius:12px;padding:20px;font-size:12px;line-height:1.9;white-space:pre-wrap;color:#ece4cc;backdrop-filter:blur(16px);text-align:left}.narrative-player footer{position:absolute;bottom:20px;left:24px;right:24px;display:flex;justify-content:space-between;align-items:center;gap:14px;z-index:3}.montage-transport{display:flex;align-items:center;gap:8px}.montage-transport .montage-toggle{min-width:74px;background:#eef1dc20}.narrative-player footer label{display:flex;align-items:center;gap:7px;font-size:10px;color:#e5dfc6ab;margin:0}.narrative-player footer input{width:auto;accent-color:#bbb98c}@keyframes montage-breathe{from{transform:scale(1)}to{transform:scale(1.035)}}@media(prefers-reduced-motion:reduce){.narrative-player,.montage-visual{transition:none}.montage-still{animation:none}}</style>

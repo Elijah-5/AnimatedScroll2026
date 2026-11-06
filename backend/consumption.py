@@ -4,8 +4,18 @@ from . import workspace as ws
 from .task_runtime import digest
 from . import revisions
 
+def character_id(p,rid):
+    record=ws.ensure(p)['entities']['material:main']
+    material=record.get('published') or record['draft']
+    redirects=(material.get('structured') or {}).get('personRedirects',{})
+    seen=set()
+    while rid in redirects and rid not in seen:
+        seen.add(rid);rid=redirects[rid]
+    return rid
+
 
 def confirmed(p, kind, rid, seen=None):
+    if kind in ('character','knowledge','persona'):rid=character_id(p,rid)
     w = ws.ensure(p)
     r = w['entities'].get(ws.key(kind, rid))
     if not ws.valid(r):
@@ -43,6 +53,8 @@ def material_context(p):
     fields={k:material.get(k) for k in ('image','imageVersion','materialInputs','annotations','targetArtwork','visualGroups')}
     value=compact(view(p))
     fields['structured']={k:value[k] for k in ('artwork','events','relations')}
+    from .library_review import active_conflicts
+    fields['structured']['conflicts']=active_conflicts(value)
     return fields
 
 

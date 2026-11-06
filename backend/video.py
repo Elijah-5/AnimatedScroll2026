@@ -16,15 +16,19 @@ from fastapi import HTTPException
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
-LIMIT=None  # No local generation-count cap; provider limits still apply.
-PROMPT_POLICY_VERSION='painting-reference-cast-v4'
+LIMIT=20
+PROMPT_POLICY_VERSION='painting-director-v5'
 MEDIA_MODE='reference_images'
 STYLE='画风与人物延续是最高优先级：与所附古画保持完全相同的绘画风格，延续其笔触、线条、设色、材质和人物造型，不真人化、不3D化、不改成现代卡通。优先使用画作中已有的人物，保持每位人物的面貌、发式、衣冠、服饰纹样及身份特征；人物姓名仅用于识别，不能凭姓名重新设计人物或生成替身。'
+# Legacy snapshot defaults only. New submissions require an explicitly
+# registered adapter; video_generation.ADAPTERS is intentionally empty.
 VIDEO_MODEL='wan3.0-video'
 VIDEO_PARAMETERS=dict(resolution='480P',ratio='adaptive',duration=5,audio=True,prompt_extend=False,seed=20261026)
 
-from . import consumption as consume
+from . import consumption as consume, video_generation as generation, video_budget as allowance, video_prompt
 from .task_runtime import digest
+
+def model_info():return generation.profile()
 
 def shot_inputs(p, sid, data):
     shot=consume.confirmed(p,'storyboard',sid)
@@ -49,17 +53,16 @@ def shot_inputs(p, sid, data):
     if len(refs)>10:raise ValueError('本模型最多接收原画和9个人物参考，请减少本镜出场人物')
     image_hash=hashlib.sha256(path.read_bytes()).hexdigest()
     # Approval identity includes exactly the provider body, not authoring metadata.
-    body=payload(dict(prompt='',referencePlan=refs,requestConfig=dict(model=VIDEO_MODEL,parameters=dict(VIDEO_PARAMETERS),mediaMode=MEDIA_MODE)),path)
-    scope=digest(body)
-    return dict(shot=shot,clue=clue,people=people,references=refs,imageSha256=image_hash,scopeFingerprint=scope),path
+    config=generation.request_config()
+    body=payload(dict(prompt='',referencePlan=refs,requestConfig=config),path)
+    inputs=dict(shot=shot,clue=clue,people=people,references=refs,imageSha256=image_hash)
+    inputs['scopeFingerprint']=digest(body)
+    inputs['directorFingerprint']=digest(compile_prompt(inputs))
+    return inputs,path
 
 
 def compile_prompt(inputs):
-    shot=inputs['shot']
-    refs='\n'.join(r['label']+'＝'+r['name'] for r in inputs['references'])
-    return (STYLE+'\n独立5秒分镜。原画与人物裁切仅作参考，不绑定实际首尾帧。不新增字幕、现代物件或人物分身。\n参考索引：\n'+refs+
-            '\n完整分镜提示词：'+shot['prompt']+'\n主体与动作：'+shot.get('action','')+'\n镜头运动：'+shot.get('camera','')+
-            '\n风格与限制：'+shot.get('style','')+'\n起始画面描述：'+shot['startFrame']+'\n结束画面描述：'+shot['endFrame'])
+    return video_prompt.compile(inputs,model_info()['duration'],STYLE)
 
 
 def preview(p,sid,data):
@@ -68,8 +71,11 @@ def preview(p,sid,data):
     compiled=compile_prompt(inputs)
     return dict(prompt=saved.get('prompt') or compiled,compiledPrompt=compiled,customized=bool(saved.get('prompt')),
                 stale=bool(saved.get('prompt')) and saved.get('baseFingerprint')!=inputs['scopeFingerprint'],
-                baseFingerprint=inputs['scopeFingerprint'],references=inputs['references'],model=VIDEO_MODEL,
-                parameters=dict(VIDEO_PARAMETERS),mediaMode=MEDIA_MODE,approved=saved.get('approval')==approval_hash(inputs,saved.get('prompt','')))
+                directorChanged=bool(saved.get('directorFingerprint')) and saved['directorFingerprint']!=inputs['directorFingerprint'],
+                baseFingerprint=inputs['scopeFingerprint'],references=inputs['references'],model=model_info()['model'],
+                parameters=generation.request_config()['parameters'],generation=model_info(),
+                audit=video_prompt.audit(inputs,saved.get('prompt') or compiled,model_info()['duration']),
+                mediaMode=MEDIA_MODE,approved=saved.get('approval')==approval_hash(inputs,saved.get('prompt','')))
 
 
 def approval_hash(inputs,text):
@@ -155,6 +161,40 @@ def install(app,get,save,db,data):
         with db() as conn:row=conn.execute('SELECT body FROM video_jobs WHERE id=?',(jid,)).fetchone()
         if not row:raise HTTPException(404,'视频任务不存在')
         return json.loads(row[0])
+    async def work_adapter(job):
+        adapter=generation.ADAPTERS.get(job['adapter'])
+        if not adapter:
+            job.update(status='paused',message='原视频通道暂未接入，任务及预留额度保留');store(job);return
+        try:
+            if not job.get('remoteId'):
+                job.update(status='submitting',message='正在提交分镜');store(job)
+                body=adapter.build_request(job,Path(data())/'video-inputs'/(job['id']+'.png'))
+                remote=await adapter.submit(job,body)
+                if not remote:raise ValueError('未返回任务编号，提交状态待核实')
+                job.update(remoteId=remote,status='pending',message='已提交，等待生成');store(job)
+            result=job.get('providerResult')
+            for _ in range(240):
+                if not result:
+                    try:result=await adapter.inspect(job)
+                    except httpx.HTTPError:
+                        job.update(status='paused',message='查询暂时失败，可继续查询原任务');store(job);return
+                if result['status']=='succeeded':
+                    job.update(status='downloading',providerResult=result,message='正在保存视频');store(job)
+                    content=await adapter.download(job,result)
+                    if not 100<=len(content)<=150*1024*1024:raise ValueError('视频文件大小异常')
+                    folder=Path(data())/'videos';folder.mkdir(exist_ok=True)
+                    temporary=folder/(job['id']+'.part');temporary.write_bytes(content);temporary.replace(folder/(job['id']+'.mp4'))
+                    job.update(status='succeeded',message='视频已保存',videoUrl=f"/api/projects/{job['projectId']}/videos/{job['id']}/file");store(job);return
+                if result['status']=='failed':
+                    job.update(status='failed',providerFailed=True,message=result.get('message','视频未生成，额度已释放'));store(job);return
+                job.update(status='running',message=result.get('message','正在生成分镜'));store(job);result=None
+                await asyncio.sleep(15)
+            job.update(status='paused',message='等待较久，可继续查询原任务');store(job)
+        except Exception as exc:
+            known=not job.get('remoteId') and isinstance(exc,httpx.HTTPStatusError) and 400<=exc.response.status_code<500 and exc.response.status_code!=408
+            job.update(status='download_failed' if job.get('providerResult') else 'paused' if job.get('remoteId') else 'failed' if known else 'submission_unknown',
+                       submissionKnownRejected=known,message='下载未完成，可继续下载原结果' if job.get('providerResult') else '提交被拒绝，未扣额度' if known else '远端状态待核实；保留额度且不会重复提交')
+            store(job)
     async def download(job,url):
         parsed=urlparse(url)
         if parsed.scheme!='https' or not (parsed.hostname or '').endswith('.aliyuncs.com'):raise ValueError('视频地址不是受支持的阿里云结果地址')
@@ -176,6 +216,8 @@ def install(app,get,save,db,data):
         if jid in inflight:return
         inflight.add(jid)
         try:
+            if job.get('adapter'):
+                await work_adapter(job);return
             async with httpx.AsyncClient(timeout=90) as client:
                 if job.get('status')=='download_failed' and job.get('remoteVideoUrl'):
                     await download(job,job['remoteVideoUrl'])
@@ -256,7 +298,7 @@ def install(app,get,save,db,data):
         p=versioned(pid,req.version);inputs,_=inputs_for(p,sid)
         if inputs['scopeFingerprint']!=req.baseFingerprint:raise HTTPException(409,'分镜输入已变化，请重新查看提示词')
         if not req.text.strip():raise HTTPException(422,'提示词不能为空')
-        media(p,sid).update(prompt=req.text,baseFingerprint=req.baseFingerprint,approval=None)
+        media(p,sid).update(prompt=req.text,baseFingerprint=req.baseFingerprint,directorFingerprint=inputs['directorFingerprint'],approval=None)
         return save(p,req.version,'studio:video:prompt',dict(storyboardId=sid))
 
     @app.post('/api/projects/{pid}/storyboards/{sid}/confirm-video')
@@ -267,7 +309,9 @@ def install(app,get,save,db,data):
         return save(p,req.version,'studio:video:confirm',dict(storyboardId=sid,trigger='user_button'))
 
     @app.get('/api/projects/{pid}/videos')
-    def videos(pid:str):return dict(jobs=list_jobs(pid),limit=None,remaining=None)
+    def videos(pid:str):
+        with db() as c:budget=allowance.summary(c,pid)
+        return dict(jobs=list_jobs(pid),limit=budget['limitCount'],remaining=budget['remainingCount'],budget=budget,generation=model_info())
 
     @app.post('/api/projects/{pid}/videos')
     async def create(pid:str,req:VideoRequest):
@@ -283,8 +327,10 @@ def install(app,get,save,db,data):
             jid=digest(identity)[:24]
             with db() as c:row=c.execute('SELECT body FROM video_jobs WHERE id=?',(jid,)).fetchone()
             if row:return json.loads(row[0])
-            candidate=dict(prompt=text,referencePlan=inputs['references'],requestConfig=dict(model=VIDEO_MODEL,parameters=dict(VIDEO_PARAMETERS),mediaMode=MEDIA_MODE))
-            try:provider_hash=digest(payload(candidate,image))
+            backend=generation.active();profile=model_info()
+            if not backend or not profile['ready']:raise HTTPException(503,'视频模型尚未接入；本次未提交任务，也未扣额度')
+            candidate=dict(prompt=text,referencePlan=inputs['references'],requestConfig=generation.request_config())
+            try:provider_hash=digest(backend.build_request(candidate,image))
             except ValueError as exc:raise HTTPException(422,str(exc)) from exc
             if not req.retryOf:
                 with db() as c:previous_jobs=[json.loads(r[0]) for r in c.execute('SELECT body FROM video_jobs WHERE project=?',(pid,))]
@@ -297,22 +343,31 @@ def install(app,get,save,db,data):
                         except (ValueError,KeyError,OSError):pass
                     if historical_hash==provider_hash:return previous
                     if not historical_hash and previous.get('status') in ('submitting','submission_unknown') and previous.get('prompt')==text:raise HTTPException(422,'历史提交状态不明且请求依据不完整，请先核对远端记录；未重新提交')
-            try:headers()
+            try:backend.validate_configuration()
             except ValueError as exc:raise HTTPException(422,str(exc)) from exc
             job=dict(id=jid,projectId=pid,storyboardId=req.storyboardId,clueId=inputs['shot']['clueId'],title=inputs['clue']['name'],
                      status='queued',message='准备提交',time=datetime.now(timezone.utc).isoformat(),prompt=text,
                      sourceVersion=p['version'],requestFingerprint=request_hash,scopeFingerprint=inputs['scopeFingerprint'],
                      providerRequestHash=provider_hash,
                      referencePlan=inputs['references'],imageSha256=inputs['imageSha256'],storyboardSnapshot=inputs['shot'],
-                     promptPolicyVersion=PROMPT_POLICY_VERSION,model=VIDEO_MODEL,duration=5,resolution='480P',
-                     requestConfig=dict(model=VIDEO_MODEL,parameters=dict(VIDEO_PARAMETERS),mediaMode=MEDIA_MODE))
+                     promptPolicyVersion=PROMPT_POLICY_VERSION,model=profile['model'],duration=profile['duration'],resolution=profile['resolution'],
+                     adapter=profile['provider'],budgetReservationCny=5,estimatedCny=profile.get('estimatedCny'),
+                     requestConfig=generation.request_config())
             if req.retryOf:job['retryOf']=req.retryOf
-            try:payload(job,image)
+            try:
+                backend.build_request(job,image)
+                price=profile.get('estimatedCny')
+                if not isinstance(price,(float,int)) or not math.isfinite(price) or not 0<price<=5:raise ValueError('模型报价尚未核实或超过单条 ¥5 额度，请先配置生成通道')
             except ValueError as exc:raise HTTPException(422,str(exc)) from exc
             folder=Path(data())/'video-inputs';folder.mkdir(exist_ok=True)
             with Image.open(image) as im:ImageOps.exif_transpose(im).convert('RGB').save(folder/(jid+'.png'))
-            job['slot']=reserve(data(),jid)
-            with db() as c:c.execute('INSERT INTO video_jobs VALUES (?,?,?)',(jid,pid,json.dumps(job,ensure_ascii=False)))
+            with db() as c:
+                c.execute('BEGIN IMMEDIATE');latest=allowance.lock_project(c,pid)
+                if latest['version']!=p['version']:raise HTTPException(409,'分镜输入在提交期间已变化，请重新载入；未提交或扣额度')
+                duplicate=c.execute('SELECT body FROM video_jobs WHERE id=?',(jid,)).fetchone()
+                if duplicate:return json.loads(duplicate[0])
+                allowance.require(c,pid)
+                c.execute('INSERT INTO video_jobs VALUES (?,?,?)',(jid,pid,json.dumps(job,ensure_ascii=False)))
             launch(job)
             return job
 

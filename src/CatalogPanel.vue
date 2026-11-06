@@ -3,7 +3,7 @@ import {computed,ref} from 'vue'
 import {id,useStudio,states,state} from './studioContext'
 import {clone} from './editRuntime'
 const s=useStudio(),tab=ref('painting'),query=ref(''),editing=ref(''),error=ref(''),form=ref<any>({}),relationId=ref(''),editBase=ref<any>(null)
-const mat=computed(()=>s.rec('material','main')),people=computed<any[]>(()=>s.entries('character'))
+const mat=computed(()=>s.rec('material','main')),people=computed<any[]>(()=>s.castEntries())
 const sources=computed<any[]>(()=>(mat.value.draft.sources||[]).filter((v:any)=>(v.title+' '+v.text+' '+v.citation).includes(query.value)))
 const events=computed<any[]>(()=>mat.value.draft.historicalEvents||[])
 const nodes=computed(()=>people.value.map((r:any,i:number)=>({id:r.id,name:r.draft.name,x:250+170*Math.cos(i*Math.PI*2/Math.max(people.value.length,1)),y:170+115*Math.sin(i*Math.PI*2/Math.max(people.value.length,1))})))

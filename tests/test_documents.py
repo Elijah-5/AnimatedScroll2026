@@ -317,7 +317,30 @@ def test_failed_batch_retry_reuses_only_identical_completed_work(monkeypatch):
         return dict(background=[],relationships=[],narrative=[])
     monkeypatch.setattr(docs,'ask',provider)
     go=lambda:asyncio.run(docs.organize(p,request(),cache.get,lambda k,v:cache.__setitem__(k,v),lambda *a:None,{}))
-    with pytest.raises(ValueError,match='provider'):go()
+    partial=go()
+    assert partial['failedPages'] and any(row.get('failed') and 'provider' in row['reason'] for row in partial['coverage'])
     first=calls[0];fail[0]=False;calls.clear();go()
     assert first not in calls  # First successful batch was cached.
     cache_keys=set(cache);p['sources'][0]['text']+='修改';go();assert set(cache)!=cache_keys
+
+
+def test_sources_extract_independently_partial_results_and_metadata_cache(monkeypatch):
+    p=literature_project();cache={};calls=[];fail=[True]
+    p['documents'].append(dict(p['documents'][0],id='d2',filename='d2.pdf'))
+    p['sources'].append(dict(p['sources'][0],id='s2',documentId='d2'))
+    req=dict(request(),documents=[dict(documentId='d',pages=[]),dict(documentId='d2',pages=[])])
+    async def provider(schema,payload,stats,validator=None):
+        if schema is docs.Extracted:
+            ids={r['sourceId'] for r in payload['passages']};calls.append(ids)
+            assert len(ids)==1
+            if ids=={'s2'} and fail[0]:raise ValueError('second source failed')
+            value=output(p) if ids=={'s'} else dict(claims=[],people=[])
+        elif schema is docs.Topics:value=dict(assignments=[dict(claimId=c['id'],topic='culture') for c in payload['claims']])
+        else:value=dict(paragraphs=[])
+        return validator(value) if validator else value
+    monkeypatch.setattr(docs,'ask',provider)
+    go=lambda:asyncio.run(docs.organize(p,req,cache.get,cache.__setitem__,lambda *a:None,{}))
+    first=go();assert first['claims'] and first['failedPages']==[dict(documentId='d2',page=1)]
+    fail[0]=False;second=go();assert not second['failedPages'] and calls.count({'s'})==1
+    p['sources'][0]['version']=2
+    third=go();assert calls.count({'s'})==1 and third['claims'][0]['references'][0]['sourceVersion']==2

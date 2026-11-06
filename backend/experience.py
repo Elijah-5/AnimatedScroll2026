@@ -27,7 +27,8 @@ def painting_people(p,legacy=False):
         try:
             c=consume.confirmed(p,'character',cid)
         except ValueError:continue
-        if c.get('depictionScope')=='background':continue
+        from .people_policy import character_allowed
+        if not character_allowed(dict(c,id=cid),p):continue
         if not cutouts.valid_box(a):continue
         can_chat=True;reason=''
         try:

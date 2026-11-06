@@ -33,9 +33,13 @@ def mysql_engine(host, port, database, user, password):
     table('tasks', key(), Column('project',String(128),index=True), text('body'))
     table('document_cache',key('key'),text('body'))
     table('studio_jobs', key(), Column('project',String(128),index=True), text('body'))
+    table('feedback_jobs', key(), Column('project',String(128),index=True), text('body'))
     table('experience_sessions', key(), Column('project',String(128),index=True), text('body'))
     table('experience_turns', key(), Column('project',String(128),index=True), text('body'))
     table('video_jobs', key(), Column('project',String(128),index=True), text('body'))
+    table('video_budget_accounts', key(), Column('project',String(128),index=True), text('body'))
+    for name in ('experiment_runs','experiment_events','experiment_artifacts','experiment_notes'):
+        table(name,key(),Column('project',String(128),index=True),text('body'))
     table('media_preview_jobs', key(), Column('project',String(128),index=True), text('body'))
     table('media_preview_quotes', key(), Column('project',String(128),index=True), text('body'))
     table('artwork_catalog',key('project_id'),text('name'),text('body'))
@@ -91,7 +95,7 @@ class MySQLConnection:
         elif sql.startswith('INSERT OR REPLACE INTO document_cache'):
             sql='INSERT INTO document_cache (`key`,body) VALUES (?,?) ON DUPLICATE KEY UPDATE body=VALUES(body)'
         else:
-            for name in ('tasks','studio_jobs','video_jobs','experience_sessions','experience_turns'):
+            for name in ('tasks','studio_jobs','feedback_jobs','video_jobs','experience_sessions','experience_turns'):
                 if sql.startswith('INSERT OR REPLACE INTO '+name+' '):
                     sql=f'INSERT INTO {name} (id,project,body) VALUES (?,?,?) ON DUPLICATE KEY UPDATE project=VALUES(project),body=VALUES(body)'
                     break

@@ -119,7 +119,8 @@ def protect(p,job):
 def adopt_analysis(p):
     analysis=p.get('documentAnalysis')
     if not analysis or analysis.get('status')=='adopted':return p
-    ids=[c['id'] for c in analysis['people'] if c['scope']=='depicted']
+    from .people_policy import intake_ids
+    ids=intake_ids(p,analysis['people'])
     existing=p['workspace']['entities']['material:main']
     kinds=[k for k in ('background','relationships','narrative') if not p['materialInputs'].get(k,'').strip() or k in existing.get('autoInputKinds',[])]
     old=copy.deepcopy(p)
@@ -236,7 +237,7 @@ async def stage_result(p,stage,job,data,cache_get,cache_put):
         if not usable(p,mat):raise ValueError(notes[-1]['message'])
     elif stage=='characters':
         for r in rows(p,'character'):
-            if r['draft'].get('depictionScope')=='background':continue
+            if not documents.character_allowed(dict(r['draft'],id=r['id']),p):continue
             if usable(p,r) and not ws.dirty(r):continue
             # Preserve supplied names and profiles; absence is not filled with invented history.
             if not r['draft'].get('summary'):
@@ -288,7 +289,7 @@ async def stage_result(p,stage,job,data,cache_get,cache_put):
         for existing in rows(p,'clue'):
             if existing['draft']['type']=='relationship':activate(existing)
         for person in list(rows(p,'character')):
-            if not usable(p,person) or person['draft'].get('depictionScope')=='background':continue
+            if not usable(p,person) or not documents.character_allowed(dict(person['draft'],id=person['id']),p):continue
             if any(r['draft']['type']=='relationship' and person['id'] in r['draft'].get('characterIds',[]) and usable(p,r) for r in rows(p,'clue')):continue
             p=await generate('relationship',person['id'])
             for r in rows(p,'clue'):
@@ -320,7 +321,7 @@ async def stage_result(p,stage,job,data,cache_get,cache_put):
             if job.get('currentUnit') and r['id']!=job['currentUnit']:continue
             if usable(p,r) and not ws.dirty(r):continue
             person=w['entities'].get('character:'+r['id'])
-            if not person or not usable(p,person) or person['published'].get('depictionScope')=='background':continue
+            if not person or not usable(p,person) or not documents.character_allowed(dict(person['published'],id=person['id']),p):continue
             try:
                 from .experience import dialogue_context
                 ctx=dialogue_context(p,r['id'])

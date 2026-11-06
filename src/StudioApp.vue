@@ -15,16 +15,22 @@ import StoryboardsPage from './pages/StoryboardsPage.vue'
 import ExperiencePage from './ExperiencePage.vue'
 import BatchConfirm from './BatchConfirm.vue'
 import GenerationButton from './GenerationButton.vue'
+import FeedbackComposer from './FeedbackComposer.vue'
+import {normalizedTarget,type SmartTarget} from './smartEditRuntime'
 import {editorProject,saveChanges,shouldScheduleSave} from './reviewRuntime'
 import {pendingEdits} from './pendingEdits'
 import StartupScreen from './StartupScreen.vue'
 import CreationCopy from './CreationCopy.vue'
 import './extensions.css'
+import {createExperimentTracker} from './experimentTracker'
+import ExperimentPanel from './ExperimentPanel.vue'
+import ScreenshotFeedback from './ScreenshotFeedback.vue'
 const initial=resolveRoute(location.hash)
 const booting=ref(true),bootError=ref(''),bootPhase=ref('正在读取项目列表…')
 const baselineProject=shallowRef<any>(null),conflicts=ref<EditConflict[]>([]),showConflicts=ref(false),clock=ref(Date.now()),nameDialog=ref<''|'create'|'rename'>(''),nameInput=ref('')
 const p=ref<any>(null),projects=ref<any[]>([]),page=ref(initial.page),busy=ref(false),libraryBusy=ref(false)
 const generationSubmitting=ref(false)
+const experiments=createExperimentTracker({project:()=>p.value?.id,page:()=>page.value,save:()=>saveAll()})
 const error=ref(''),notice=ref(''),risk=ref<any>(null),focus=ref(''),baseline=ref<Record<string,string>>({}),libraryBaseline=ref('')
 const checklist=ref<any>({ready:false,items:[]}),checksOpen=ref(false),checkTarget=ref(''),mobileNav=ref(false)
 const returnTo=ref({page:'overview',focus:'',scrollY:0})
@@ -47,6 +53,12 @@ const draftSavers=shallowReactive(new Map<string,{save:()=>Promise<void>,dirty:(
 function registerDraftSaver(key:string,save:()=>Promise<void>,dirty:()=>boolean){draftSavers.set(key,{save,dirty});return ()=>draftSavers.delete(key)}
 const localChanges=computed(()=>p.value&&(changed().length>0||libraryData(p.value)!==libraryBaseline.value||[...draftSavers.values()].some(v=>v.dirty())))
 function entries(kind:string){return records.value.filter(r=>r.kind===kind)}
+function castEntries(){const allowed=p.value?.peoplePolicy?.eligibleCharacterIds;return entries('character').filter(r=>r.draft.inclusionDecision!=='exclude'&&(allowed?allowed.includes(r.id)||r.draft.namingOrigin==='creator':r.draft.depictionScope!=='background'))}
+const smartComposer=ref<InstanceType<typeof FeedbackComposer>>(),smartScopes=ref<Record<string,any>>({})
+const smartScope=computed(()=>smartScopes.value[(p.value?.id||'')+':'+page.value]||null)
+async function openSmartEdit(target:SmartTarget,label:string,prepare?:()=>Promise<void>,focusPanel=true){smartScopes.value[p.value.id+':'+page.value]={target:normalizedTarget(target),label,prepare};await nextTick();if(focusPanel)void smartComposer.value?.focus()}
+async function runSmartAction(target:SmartTarget,action:any,prepare?:()=>Promise<void>){if(prepare)await prepare();smartScopes.value[p.value.id+':'+page.value]={target:normalizedTarget(target),label:'资料批量处理 · '+target.itemIds.length+' 项',prepare};await nextTick();await smartComposer.value?.send(undefined,normalizedTarget(target),action)}
+
 function rec(kind:string,key:string){return p.value?.workspace.entities[kind+':'+key]}
 function title(r:any){return r?.draft?.name||r?.draft?.title||r?.id||''}
 function libraryData(value:any){return JSON.stringify(['authoringDrafts','image','imageVersion','materialInputs','sources','annotations','observations','matches','visualDetectionProposal','documents','documentAnalysis','materialInputOrigins','targetArtwork'].map(k=>value[k]))}
@@ -205,7 +217,7 @@ async function retryJob(job:any){
  await run(async()=>{await saveAll();await api(`/projects/${p.value.id}/tasks`,'POST',{version:p.value.version,kind:job.task,documentId:job.request?.documentId||'',pages:job.request?.pages||[],documents:job.request?.documents||[],targetArtwork:job.request?.targetArtwork||'',trigger:'user_button'});await refresh();notice.value='分析任务已提交'})
 }
 function add(kind:string,data:any,rid=id()){const r={id:rid,kind,draft:data,published:null,revision:0,state:'draft',refs:[],history:[]};p.value.workspace.entities[kind+':'+rid]=r;return r}
-async function legacy(value:any){accepted(value);await updateChecklist()}
+async function legacy(value:any){accepted(await api(`/projects/${value.id}/studio/editor`),value);await updateChecklist()}
 async function openProject(pid:string){await saveAll();accepted(await api('/projects/'+pid+'/studio/editor'));localStorage.setItem('animatedscroll-project',pid);focus.value='';await restoreEdits();await updateChecklist()}
 async function reloadProjects(){projects.value=await api('/projects');if(!p.value||!projects.value.some(item=>item.id===p.value.id)){if(projects.value.length){accepted(await api('/projects/'+projects.value[0].id+'/studio/editor'));localStorage.setItem('animatedscroll-project',projects.value[0].id);await updateChecklist()}else{p.value=null;baselineProject.value=null;checklist.value={ready:false,items:[]};page.value='overview';writeRoute('overview')}}}
 async function create(projectName='未命名项目'){await run(async()=>{await saveAll();const project=await api('/projects','POST',{title:projectName});accepted(await api(`/projects/${project.id}/studio/editor`));projects.value=await api('/projects');localStorage.setItem('animatedscroll-project',project.id);page.value='library';focus.value='';writeRoute('library');await updateChecklist()})}
@@ -247,7 +259,7 @@ onMounted(async()=>{
  window.addEventListener('hashchange',hashChanged);timer=setInterval(()=>{clock.value=Date.now();poll()},3000)
 })
 onUnmounted(()=>{clearTimeout(saveTimer);clearTimeout(localTimer);clearInterval(timer);window.removeEventListener('hashchange',hashChanged)})
-provide('studio',{unit,reviewing,confirmUnit,generateStep,scheduleAutosave,applyRecord,applyAll,registerDraftSaver,p,page,focus,busy,generating,error,notice,records,entries,rec,title,api,run,saveAll,refresh,navigate,confirm,acknowledge,discard,remove,generate,retryJob,add,legacy,saveFolders,checklist,updateChecklist,openChecks,goToCheck,pending,checkTarget,selectEntity,locked,entityBusy,rootLocked,syncLatest,activeJob,reloadProjects,openProject})
+provide('studio',{experiments,openSmartEdit,runSmartAction,castEntries,unit,reviewing,confirmUnit,generateStep,scheduleAutosave,applyRecord,applyAll,registerDraftSaver,p,page,focus,busy,generating,error,notice,records,entries,rec,title,api,run,saveAll,refresh,navigate,confirm,acknowledge,discard,remove,generate,retryJob,add,legacy,saveFolders,checklist,updateChecklist,openChecks,goToCheck,pending,checkTarget,selectEntity,locked,entityBusy,rootLocked,syncLatest,activeJob,reloadProjects,openProject})
 </script>
 
 <template>
@@ -255,11 +267,11 @@ provide('studio',{unit,reviewing,confirmUnit,generateStep,scheduleAutosave,apply
 <div v-else class="app-frame" :class="{'experience-mode':experience}" @input="scheduleAutosave" @change="scheduleAutosave" @compositionstart="compositionStart" @compositionend="compositionEnd" @focusout="blurSave">
  <header class="app-topbar">
   <div class="brand-group"><button v-if="!experience" class="icon-button mobile-menu" aria-label="打开制作导航" :aria-expanded="mobileNav" @click="mobileNav=!mobileNav"><AppIcon name="menu"/></button><div class="brand"><span class="brand-mark"><AppIcon name="film" :size="19"/></span><span>AnimatedScroll</span></div></div>
-  <nav class="mode-switch" aria-label="工作模式"><button :class="{active:!experience}" :aria-current="!experience?'page':undefined" :disabled="busy" @click="experience?returnToCreation():null">创作</button><button :class="{active:experience}" :aria-current="experience?'page':undefined" :disabled="busy" @click="navigate('experience')">欣赏作品</button></nav>
+  <button class="experiment-trigger" data-experiment-ignore @click="experiments.state.panel=true">{{experiments.recording()?'实验记录中':'实验面板'}}</button><nav class="mode-switch" aria-label="工作模式"><button :class="{active:!experience}" :aria-current="!experience?'page':undefined" :disabled="busy" @click="experience?returnToCreation():null">创作</button><button :class="{active:experience}" :aria-current="experience?'page':undefined" :disabled="busy" @click="navigate('experience')">欣赏作品</button></nav>
   <div class="topbar-actions" v-if="!experience"><label class="project-select"><span class="sr-only">当前项目</span><select :value="p?.id||''" :disabled="busy" @change="changeProject"><option v-if="!p" value="">选择项目</option><option v-for="item in projects" :key="item.id" :value="item.id">{{item.title}}</option></select></label><button class="icon-button" :disabled="busy||!p" @click="beginName('rename')" aria-label="修改画作名称" title="修改画作名称"><AppIcon name="edit" :size="16"/></button><button class="icon-button" :disabled="busy" @click="beginName('create')" aria-label="新建项目" title="新建项目"><AppIcon name="plus"/></button><span class="topbar-divider"/><CreationCopy/><button class="checks-trigger" aria-label="制作检查" :disabled="!p" :aria-expanded="checksOpen" @click="openChecks()"><AppIcon name="check" :size="17"/><span>制作检查</span><b class="count-badge" v-if="pending.length">{{pending.length}}</b></button></div>
   <button v-else class="return-creation" :disabled="busy" @click="returnToCreation"><AppIcon name="back" :size="17"/>返回创作</button>
  </header>
- <div v-show="!experience" class="creation-space">
+ <ExperimentPanel :tracker="experiments" :project-id="p?.id"/><ScreenshotFeedback :tracker="experiments" :project-id="p?.id" :page="page"/><div v-show="!experience" class="creation-space">
   <div v-if="mobileNav" class="mobile-nav-backdrop" @click="mobileNav=false"/>
   <aside class="creation-sidebar" :class="{open:mobileNav}"><div class="sidebar-caption">创作工作台</div><nav aria-label="制作步骤"><button v-for="item in creationPages" :key="item.id" :class="{active:page===item.id}" :aria-current="page===item.id?'page':undefined" :disabled="busy" @click="navigate(item.id)"><AppIcon :name="item.icon" :size="19"/><span>{{item.name}}</span><small>{{item.number}}</small></button></nav><div class="sidebar-foot"><span class="local-dot"/>本地创作空间<small>修改自动保存，AI内容可以继续使用。</small></div></aside>
   <div class="creation-main">
@@ -270,8 +282,10 @@ provide('studio',{unit,reviewing,confirmUnit,generateStep,scheduleAutosave,apply
    <main class="studio-shell">
     <div class="page-heading"><div><span class="eyebrow">{{page==='overview'?'系统概览':'当前步骤 · '+currentPage.number}}</span><h1>{{currentPage.name}}</h1></div><div class="project-meta" v-if="p"><GenerationButton v-if="page!=='overview'&&page!=='storyboards'" :page="page"/><small role="status">{{autoStatus}}</small></div></div>
     <section v-if="p&&page!=='overview'" class="page-guide"><template v-for="step in checklist.pages?.filter((v:any)=>v.id===page)"><span>{{step.done}}/{{step.total}} 项可用</span><span v-if="step.blocker">{{step.blocker}}</span><span v-else-if="step.complete">本步内容已可用，可继续下一步；人工核对为可选</span><span v-else>未完成项见下方卡片，其他可用内容不受影响</span><button v-if="step.nextAction&&step.nextAction.page!==page" @click="navigate(step.nextAction.page)">下一步：{{step.nextAction.label}}</button></template></section>
+    <p v-if="p&&!['overview','library','experience'].includes(page)&&rec('material','main')?.draft.structured?.conflicts?.some((c:any)=>c.kind==='contradiction'&&c.status!=='retired'&&!['current','candidate'].includes(c.resolution))" class="material-dispute-note">资料中保留着不同说法，建议先处理相关分歧。继续创作时将保留不确定性。<button @click="navigate('library')">查看资料争议</button></p>
     <OverviewPage v-if="page==='overview'"/>
     <fieldset v-if="p" v-show="page!=='overview'" class="page-content" :disabled="busy"><KeepAlive :key="p.id" :max="5"><component v-if="pageComponents[page]" :is="pageComponents[page]" :key="page" v-on="page==='library'?{replace:legacy,running:(value:boolean)=>libraryBusy=value}:{}"/></KeepAlive></fieldset>
+    <FeedbackComposer v-if="p&&!['overview','experience'].includes(page)" :key="p.id+':'+page" ref="smartComposer" :target="smartScope?.target||null" :label="smartScope?.label||''" :prepare="smartScope?.prepare"/>
     <section v-if="!p&&page!=='overview'" class="empty-project"><AppIcon :name="currentPage.icon" :size="40"/><h2>尚无项目</h2><p>新建项目后可导入画作和资料。项目内容保存在本机。</p><button class="primary" :disabled="busy" @click="beginName('create')">新建项目<AppIcon name="plus" :size="17"/></button></section>
    </main>
   </div>

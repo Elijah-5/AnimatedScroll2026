@@ -99,13 +99,13 @@ def test_batch_waits_for_review_and_reject_stops_unsubmitted(media):
     assert result['budget']['reservedCny']==4
 
 
-def test_budget_reserves_inflight_and_is_shared_across_projects(media):
+def test_video_budget_is_scoped_to_each_project(media):
     c,p,calls=media
     with main.db() as db:db.execute('INSERT INTO media_preview_jobs VALUES (?,?,?)',('existing','another-project',json.dumps(dict(status='pending',reservedCny=9))))
     q=quote(c,p)
-    assert q['budget']['remainingCny']==1
-    assert submit(c,p,q).status_code==422
-    assert calls==[]
+    assert q['budget']['remainingCny']==100
+    assert submit(c,p,q).status_code==200
+    assert c.get(f"/api/projects/{p['id']}/video-budget").json()['remainingCount']==19
 
 
 def test_unknown_submission_blocks_new_paid_work_but_allows_free_crop(media,monkeypatch):

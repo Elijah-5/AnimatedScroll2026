@@ -104,7 +104,10 @@ def install(app,get,save,db,data):
                     task.update(details);progress(task,text)
                 stats['report']=lambda count:(task.update(modelCalls=count,validationErrors=stats.get('validationErrors',[])),store(task))
                 p['documentAnalysis']=await literature.organize(p,req.model_dump(),cache_get,cache_put,report,stats)
-                task['modelCalls']=stats['modelCalls'];task['resultSummary']='文献整理完成，请查看三段摘要、人物范围和原页依据后采用'
+                if req.autoEnable:
+                    from .completions import adopt_analysis
+                    p=adopt_analysis(p)
+                task['modelCalls']=stats['modelCalls'];task['resultSummary']='资料已整合，可在摘要面板查看人物、背景及原文'
             elif req.kind in ('materials','legacy_materials'):
                 from .materials import organize
                 progress(task,'整理原文与人物关系')

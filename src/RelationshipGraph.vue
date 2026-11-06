@@ -4,10 +4,11 @@ import {useStudio} from './studioContext'
 import {relationshipGraph} from './structuredRuntime'
 const props=defineProps<{people:any[],relations:any[],evidence:any[],publishedRelations:any[]}>(),s=useStudio(),includeBackground=ref(false),selected=ref(''),arrow='relation-'+useId().replaceAll(':','')
 const people=computed(()=>{
- const result=props.people.map(p=>({...p}));for(const c of s.entries('character')){
+ const eligible=new Set(s.castEntries().map((c:any)=>c.id))
+ const result=props.people.map(p=>({...p,castEligible:!!p.characterId&&eligible.has(p.characterId)}));for(const c of s.castEntries()){
   const known=result.find(p=>p.characterId===c.id)
   if(known)known.name=c.draft.name
-  else result.push({id:c.id,characterId:c.id,name:c.draft.name,roleType:c.draft.roleType,annotationIds:[],scope:c.draft.depictionScope})
+  else result.push({id:c.id,characterId:c.id,name:c.draft.name,roleType:c.draft.roleType,annotationIds:[],scope:c.draft.depictionScope,castEligible:true})
  }return result
 })
 const graph=computed(()=>relationshipGraph(people.value,props.relations.map(r=>({...r,state:props.publishedRelations.some(old=>JSON.stringify(old)===JSON.stringify(r))?'confirmed':'draft'})),s.entries('clue'),includeBackground.value))

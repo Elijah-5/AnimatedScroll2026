@@ -7,7 +7,7 @@ from pathlib import Path
 from backend import config, storage, catalog
 from backend.history_schema import INSERT_ORDER as HISTORY_TABLES
 
-TABLES=('projects','events','tasks','studio_jobs','document_cache','video_jobs','experience_sessions','experience_turns','media_preview_jobs','media_preview_quotes','content_snapshots','studio_read_models')+HISTORY_TABLES
+TABLES=('projects','events','tasks','studio_jobs','feedback_jobs','document_cache','video_jobs','video_budget_accounts','experiment_runs','experiment_events','experiment_artifacts','experiment_notes','experience_sessions','experience_turns','media_preview_jobs','media_preview_quotes','content_snapshots','studio_read_models')+HISTORY_TABLES
 
 
 def migrate(source,verify_only=False):

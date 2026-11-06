@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {ref,computed,watch,onMounted,onActivated,onDeactivated,onUnmounted} from 'vue'
 import {useStudio} from './studioContext'
-const props=defineProps<{ids:string[];scope:string;visibleIds:string[]}>(),s=useStudio()
+const props=defineProps<{ids:string[];scope:string;visibleIds:string[];historyOnly?:boolean}>(),s=useStudio()
 const jobs=ref<any[]>([]),budget=ref<any>(null),quote=ref<any>(null),busy=ref(false),error=ref(''),kind=ref('video'),requestId=ref('')
 const allVisibleJobs=computed(()=>jobs.value.filter(j=>props.visibleIds.includes(j.storyboardId)))
 const visibleJobs=computed(()=>allVisibleJobs.value.filter((j,i,all)=>all.findIndex(v=>v.storyboardId===j.storyboardId)===i))
@@ -21,7 +21,8 @@ onMounted(start);onActivated(start);onDeactivated(stop);onUnmounted(stop)
 const labels:Record<string,string>={queued:'等待提交',waiting_review:'等待前一条检查',submitting:'正在提交',pending:'正在生成',downloading:'正在下载',succeeded:'已完成',failed:'未成功',submission_unknown:'提交状态待核实',cost_unknown:'费用待核实',paused:'等待继续查询',download_failed:'下载未完成',skipped:'未提交'}
 </script>
 <template>
- <section class="preview-panel" aria-label="低成本叙事预览">
+ <section class="preview-panel" :aria-label="historyOnly?'旧版媒体记录':'低成本叙事预览'">
+  <template v-if="!historyOnly">
   <h2>低成本预览</h2><p>勾选 1–3 条分镜后查看费用。先生成第一条，检查通过后逐条继续。</p>
   <p v-if="budget">本轮总上限 ¥{{budget.limitCny}} · 已用及预留 ¥{{budget.reservedCny.toFixed(2)}} · 剩余 ¥{{budget.remainingCny.toFixed(2)}} <span v-if="budget.blocked"> · 有状态待核实，付费生成已暂停</span></p>
   <div class="actions"><label>预览形式<select v-model="kind"><option value="video">低清短片 · 480P / 5 秒</option><option value="image">分镜图片 · 视频不可用时</option><option value="crop">原画局部预览 · 免费</option></select></label><button :disabled="busy||!ids.length||ids.length>3" @click="estimate">生成低成本预览 · 先查看费用</button><small>已选 {{ids.length}} 条</small></div>
@@ -32,10 +33,10 @@ const labels:Record<string,string>={queued:'等待提交',waiting_review:'等待
    <details v-for="item in quote.items" :key="item.storyboardId"><summary>{{item.title}} · {{item.referenceCount}} 张参考图</summary><p>{{item.narrationText}}</p><pre>{{item.prompt}}</pre></details>
    <div class="actions"><button class="primary" :disabled="busy||quote.reservedCny>(budget?.remainingCny??0)||(budget?.blocked&&kind!=='crop')" @click="submit">{{kind==='crop'?'确认制作免费预览':'确认费用并生成第一条'}}</button><button @click="quote=null">取消</button></div>
   </section>
-  <div class="preview-jobs"><article v-for="job in visibleJobs" :key="job.id"><h3>{{job.title}} <small>{{labels[job.status]||job.status}}</small></h3><p>{{job.kind==='video'?'视频':job.kind==='image'?'图片':'原画局部'}} · {{job.mediaLabel}} · {{job.message}}</p>
+  </template><div class="preview-jobs"><article v-for="job in visibleJobs" :key="job.id"><h3>{{job.title}} <small>{{labels[job.status]||job.status}}</small></h3><p>{{job.kind==='video'?'视频':job.kind==='image'?'图片':'原画局部'}} · {{job.mediaLabel}} · {{job.message}}</p>
    <video v-if="job.videoUrl" :src="job.videoUrl" controls muted playsinline preload="metadata"/>
    <img v-else-if="job.imageUrl" :src="job.imageUrl" :alt="job.title+'分镜预览'"/>
-   <div class="actions"><template v-if="job.status==='succeeded'&&job.review==='pending'"><button :disabled="busy" @click="review(job,true)">画面通过，继续下一条</button><button :disabled="busy" @click="review(job,false)">效果不可用，停止本组</button></template><span v-if="job.review==='accepted'">已检查通过</span><span v-if="job.review==='rejected'">未采用，可改用分镜图片</span><button v-if="['paused','download_failed'].includes(job.status)&&job.remoteId" :disabled="busy" @click="resume(job)">继续查询／下载原任务</button><a v-if="job.videoUrl||job.imageUrl" :href="job.videoUrl||job.imageUrl" :download="job.id+job.extension">下载</a></div>
+   <div class="actions"><template v-if="!historyOnly&&job.status==='succeeded'&&job.review==='pending'"><button :disabled="busy" @click="review(job,true)">画面通过，继续下一条</button><button :disabled="busy" @click="review(job,false)">效果不可用，停止本组</button></template><span v-if="job.review==='accepted'">已检查通过</span><span v-if="job.review==='rejected'">未采用，可改用分镜图片</span><button v-if="['paused','download_failed'].includes(job.status)&&job.remoteId" :disabled="busy" @click="resume(job)">继续查询／下载原任务</button><a v-if="job.videoUrl||job.imageUrl" :href="job.videoUrl||job.imageUrl" :download="job.id+job.extension">下载</a></div>
   </article></div><details v-if="historicalJobs.length"><summary>此前任务记录 · {{historicalJobs.length}} 条</summary><p v-for="job in historicalJobs" :key="job.id">{{job.title}} · {{job.kind==='video'?'视频':job.kind==='image'?'图片':'原画局部'}} · {{labels[job.status]||job.status}} · {{job.message}}</p></details>
  </section>
 </template>

@@ -2,7 +2,7 @@
 import {computed,onMounted,onUnmounted,ref} from 'vue'
 import type {PreparedAssets} from './experienceAssets'
 import {paintingFrame,focusTransform,regionTransform,type Figure,type Box} from './experiencePresentation'
-const props=defineProps<{image:string;people:Figure[];focused:string;cutouts:Record<string,any>;loading:boolean;assets?:PreparedAssets;region?:Box}>()
+const props=defineProps<{image:string;people:Figure[];focused:string;cutouts:Record<string,any>;loading:boolean;assets?:PreparedAssets;region?:Box;cinematic?:boolean}>()
 const emit=defineEmits<{choose:[person:Figure];reset:[]}>()
 const stage=ref<HTMLElement>(),size=ref({w:800,h:480}),natural=ref({w:800,h:480}),hovered=ref('')
 const alpha=computed(()=>new Map(Object.entries(props.assets?.alpha||{})))
@@ -42,7 +42,7 @@ onMounted(()=>{observer=new ResizeObserver(entries=>{const r=entries[0]!.content
 onUnmounted(()=>{observer?.disconnect();window.removeEventListener('keydown',escape)})
 </script>
 <template>
- <div class="painting-viewer" :class="{'is-focused':!!focused}">
+ <div class="painting-viewer" :class="{'is-focused':!!focused,'is-montage':cinematic}">
   <div ref="stage" class="painting-stage" :class="{'has-hover':!!hovered}" @pointermove="move" @pointerleave="hovered=''" @click="click" @keydown.esc="reset">
    <div class="painting-plane" :style="planeStyle">
     <img class="painting-original" :src="image" alt="已确认的原画，可选择画中人物" draggable="false" @load="natural={w:($event.target as HTMLImageElement).naturalWidth,h:($event.target as HTMLImageElement).naturalHeight}">
@@ -60,11 +60,11 @@ onUnmounted(()=>{observer?.disconnect();window.removeEventListener('keydown',esc
  </div>
 </template>
 <style scoped>
-.painting-viewer{border:1px solid #d8d0bd;border-radius:18px;overflow:hidden;background:#eee9dd;box-shadow:0 10px 30px #594a2510}
-.painting-media-slot{position:absolute;inset:0;pointer-events:none;z-index:5;display:flex;align-items:center;justify-content:center}.painting-media-slot:empty{display:none}
-.painting-stage{height:clamp(340px,35vw,560px);border-radius:0;position:relative;overflow:hidden;background:#ede7da;line-height:normal;cursor:default;isolation:isolate}
+.painting-viewer{scroll-margin-top:80px;border:1px solid #d8d0bd;border-radius:18px;overflow:hidden;background:#eee9dd;box-shadow:0 10px 30px #594a2510}
+.painting-media-slot{position:absolute;inset:0;pointer-events:none;z-index:5;display:flex;align-items:center;justify-content:center}.painting-media-slot:empty{display:none}.is-montage .painting-stage{height:clamp(460px,41vw,660px)}.painting-viewer:fullscreen{border:0;border-radius:0;background:#1d291f}.painting-viewer:fullscreen .painting-stage{height:100dvh}.painting-viewer:fullscreen .painting-caption{display:none}.is-montage .painting-name,.is-montage .painting-reset{display:none}
+.painting-stage{height:clamp(340px,35vw,560px);border-radius:0;position:relative;overflow:hidden;background:#ede7da;line-height:normal;cursor:default;isolation:isolate;transition:height .7s ease}
 .painting-stage.has-hover{cursor:pointer}.is-focused .painting-stage{background:#282c27}
-.painting-plane{position:absolute;transform-origin:0 0;transition:transform .7s cubic-bezier(.22,.7,.2,1);will-change:transform;pointer-events:none}
+.painting-plane{position:absolute;transform-origin:0 0;transition:transform 1s cubic-bezier(.22,.7,.2,1);will-change:transform;pointer-events:none}
 .painting-original{display:block;width:100%;height:100%;user-select:none}
 .painting-shade{position:absolute;inset:0;background:#121c19;opacity:0;transition:opacity .55s;pointer-events:none}.painting-shade.visible{opacity:.65}
 .painting-figure{position:absolute;pointer-events:none;opacity:0;transition:opacity .22s;filter:drop-shadow(0 0 var(--edge-size,1px) #fff3c2) drop-shadow(0 0 var(--edge-glow,2px) #dfb963)}

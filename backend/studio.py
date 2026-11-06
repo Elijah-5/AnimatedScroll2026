@@ -27,7 +27,7 @@ def context(p,task='check',target=''):
     from .structured import material_sources
     mat=chosen(w['entities']['material:main']);mat['sources']=[v for v in material_sources(mat) if v.get('confirmed',True) and v.get('sourceType')!='creative_intent']
     mat.pop('literatureInput',None)  # Editor buffer is not a second, unbounded evidence channel.
-    chars=[dict(chosen(r),id=r['id']) for r in rows('character') if character_allowed(chosen(r))]
+    chars=[dict(chosen(r),id=r['id']) for r in rows('character') if character_allowed(chosen(r),p)]
     refs=evidence_refs(mat.get('materialInputOrigins',{}))+evidence_refs(chars)+evidence_refs(mat.get('structured',{}))
     mat['sources']=relevant_sources(mat['sources'],refs)
     for c in chars:
@@ -59,7 +59,9 @@ def context(p,task='check',target=''):
     if task=='clue':ctx['targetClue']=ws.find(w,'clue',target)['draft']
     if task=='relationship':ctx['targetCharacter']=chosen(ws.find(w,'character',target))
     if task=='storyboard':
-        ctx['storyboard']=ws.find(w,'storyboard',target)['draft'];ids=ctx['storyboard'].get('characterIds',[])
+        from .consumption import character_id
+        ctx['storyboard']=copy.deepcopy(ws.find(w,'storyboard',target)['draft']);ids=list(dict.fromkeys(character_id(p,cid) for cid in ctx['storyboard'].get('characterIds',[])))
+        ctx['storyboard']['characterIds']=ids
         ctx['characters']=[c for c in chars if c['id'] in ids]
         ctx['clues']=[dict(r['published'],id=r['id']) for r in rows('clue') if r['id']==ctx['storyboard']['clueId'] and ws.valid(r)]
         ctx['knowledge']=[dict(r['published'],id=r['id']) for r in rows('knowledge') if r['id'] in ids and ws.valid(r)]
@@ -83,6 +85,10 @@ def context(p,task='check',target=''):
     if 'material' in ctx:
         for field in ('structured','historySnapshot','materialInputOrigins','sources','matches','observations'):
             ctx['material'].pop(field,None)
+    from .feedback import rebind
+    record=w['entities']['material:main'];redirects=((record.get('published') or record['draft']).get('structured') or {}).get('personRedirects',{})
+    if redirects:
+        ctx=copy.deepcopy(ctx);rebind(ctx,redirects)
     return ctx
 
 def task_paths(p,task,target):
@@ -256,10 +262,14 @@ def install(app,get,save,db):
             seen.add(signature)
             if task['status']=='completed':continue
             result.append(dict(id='analysis-'+task['id'],family='analysis',task=task['kind'],target='',request=request,label=labels.get(task['kind'],task['kind']),page='library',state=task['status'],error=task.get('progress','') if task['status'] in ('failed','stale','interrupted') else '',progress=task.get('progress',''),**{k:task[k] for k in ('readSet','writeSet','startedAt','time','inputHash','outputHashes','inputsChanged') if k in task}))
+        with db() as c:feedback_rows=[json.loads(r[0]) for r in c.execute('SELECT body FROM feedback_jobs WHERE project=?',(pid,))]
+        for job in feedback_rows:
+            if job['status'] in ('queued','running'):
+                result.append(dict(id=job['id'],family='feedback',task='feedback',target='',label='智能修改',page='library',state=job['status'],progress=job.get('progress',''),time=job['time']))
         if any(j.get('state') in ('queued','running') for j in result):
             latest=get(pid)
             for j in result:
-                if j.get('family')!='completion' and j.get('state') in ('queued','running') and j.get('inputHash'):
+                if j.get('family') not in ('completion','feedback') and j.get('state') in ('queued','running') and j.get('inputHash'):
                     try:
                         read_value=tr.analysis_inputs(latest,j['task'],j.get('request',{})) if j.get('family')=='analysis' else context(latest,j['task'],j['target'])
                         tr.ensure_fresh(latest,j,read_value);j['inputsChanged']=False
@@ -342,7 +352,7 @@ def install(app,get,save,db):
         if task=='plots':
             if not ws.valid(w['entities']['intent:main']):raise ValueError('请先确认创作设置')
             from .documents import character_allowed
-            chars=[r for r in w['entities'].values() if r['kind']=='character' and r['state']!='deleted' and character_allowed(r['published'] or r['draft'])]
+            chars=[r for r in w['entities'].values() if r['kind']=='character' and r['state']!='deleted' and character_allowed(r['published'] or r['draft'],p)]
             if not chars or any(not ws.valid(r) for r in chars):raise ValueError('请先确认人物资料：'+'、'.join(ws.named(r) for r in chars if not ws.valid(r)))
         if task=='knowledge' and not any(r['kind']=='clue' and ws.valid(r) for r in w['entities'].values()):raise ValueError('请先确认线索')
         if task=='knowledge' and not context(p,'knowledge')['clues']:raise ValueError('没有可以核对原文依据的有效确认线索')

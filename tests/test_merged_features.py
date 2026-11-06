@@ -18,6 +18,9 @@ from test_studio import prepare, draft, confirm
 def merged_client(tmp_path,monkeypatch):
     monkeypatch.setattr(main,'DATA',tmp_path)
     monkeypatch.delenv('DASHSCOPE_API_KEY',raising=False)
+    from backend import video_generation
+    from video_adapter_fake import FakeVideoAdapter
+    monkeypatch.setitem(video_generation.ADAPTERS,'aihubmix',FakeVideoAdapter())
     with TestClient(main.app) as client:yield client
 
 
@@ -120,6 +123,9 @@ def test_old_prompt_version_and_unconfirmed_shot_are_rejected(merged_client):
 
 
 def mock_video_provider(monkeypatch):
+    from backend import video_generation
+    from video_adapter_fake import FakeVideoAdapter
+    monkeypatch.setitem(video_generation.ADAPTERS,'aihubmix',FakeVideoAdapter())
     calls=[];original=httpx.AsyncClient
     def handle(request):
         calls.append(request)

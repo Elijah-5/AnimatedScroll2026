@@ -219,7 +219,7 @@ async def match_people(path,project):
     from .structured import view,compact,material_sources
     mat=project.get('workspace',{}).get('entities',{}).get('material:main',{}).get('published')
     unified=compact(view(project)) if mat else {}
-    chars=[c for c in project['characters'] if c.get('depictionScope')=='depicted'];sources=relevant_sources(material_sources(mat) if mat else project['sources'],evidence_refs(chars)+evidence_refs(unified));hints={}
+    chars=[c for c in project['characters'] if c.get('name') and character_allowed(c,project)];sources=relevant_sources(material_sources(mat) if mat else project['sources'],evidence_refs(chars)+evidence_refs(unified));hints={}
     for c in chars:
         for i,h in enumerate(c.get('visualHints',[])):
             source=next((s for s in sources if s['id']==h.get('sourceId') and s.get('version')==h.get('sourceVersion')),None)

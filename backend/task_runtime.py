@@ -98,11 +98,12 @@ def apply_result(get,save,pid,base,result,task,read_fn,action,meta=None,reconcil
     raise StaleTask('项目持续变化，请重试')
 
 def reserve(db,table,task):
-    if table not in ('tasks','studio_jobs'):raise ValueError('invalid task table')
+    if table not in ('tasks','studio_jobs','feedback_jobs'):raise ValueError('invalid task table')
     with db() as c:
         c.execute('BEGIN IMMEDIATE')
         c.execute('CREATE TABLE IF NOT EXISTS studio_jobs(id TEXT PRIMARY KEY,project TEXT,body TEXT)')
-        for other in ('tasks','studio_jobs'):
+        c.execute('CREATE TABLE IF NOT EXISTS feedback_jobs(id TEXT PRIMARY KEY,project TEXT,body TEXT)')
+        for other in ('tasks','studio_jobs','feedback_jobs'):
             for body, in c.execute('SELECT body FROM '+other+' WHERE project=?',(task['projectId'],)):
                 existing=json.loads(body)
                 if existing.get('status',existing.get('state')) in ('queued','running'):raise ValueError('本项目已有任务正在运行，请勿重复提交')

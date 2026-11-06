@@ -107,7 +107,9 @@ def pinned(p,cid):
 def candidates(p,target=''):
     result=[]
     for r in ws.ensure(p)['entities'].values():
-        if r['kind']!='character' or not ws.valid(r) or (target and r['id']!=target) or r['published'].get('depictionScope')=='background':continue
+        from .people_policy import character_allowed
+        if r['kind']!='character' or not ws.valid(r) or (target and r['id']!=target):continue
+        if not character_allowed(dict(r['published'],id=r['id']),p):continue
         existing=p['workspace']['entities'].get('persona:'+r['id'])
         if not target and existing and (existing.get('published') or existing.get('draft',{}).get('prompt')):continue
         try:consume.confirmed(p,'material','main');knowledge(p,r['id'])

@@ -34,3 +34,41 @@ test('background people stay distinct and require explicit inclusion in the grap
  const initial=relationshipGraph(people,relations,[]);assert.equal(initial.nodes.length,1);assert.equal(initial.hidden,1);assert.equal(initial.unresolved,1)
  const full=relationshipGraph(people,relations,[],true);assert.equal(full.nodes.length,2);assert.equal(full.edges.length,1)
 })
+const smartCode=ts.transpileModule(readFileSync(new URL('../src/smartEditRuntime.ts',import.meta.url),'utf8'),{compilerOptions:{module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022}}).outputText
+const {sameTarget,selectFiltered}=await import('data:text/javascript;base64,'+Buffer.from(smartCode).toString('base64'))
+test('bulk selection covers all filtered pages and keeps unrelated selections',()=>{
+ const all=Array.from({length:118},(_,i)=>'person-'+i)
+ const selected=selectFiltered(['existing'],all,true)
+ assert.equal(selected.length,119);assert.ok(selected.includes('person-117'))
+ assert.deepEqual(selectFiltered(selected,all,false),['existing'])
+})
+test('smart edit target identity preserves fields and unit boundaries',()=>{
+ assert.ok(sameTarget({kind:'plot',itemIds:['b','a','a']},{kind:'plot',section:'content',itemIds:['a','b']}))
+ assert.ok(!sameTarget({kind:'clue',itemIds:['a'],unitIds:['u1']},{kind:'clue',itemIds:['a'],unitIds:['u2']}))
+ assert.ok(!sameTarget({kind:'persona',itemIds:['a']},{kind:'character',itemIds:['a']}))
+})
+test('an existing character ID cannot bypass the shared cast exclusion in relationships',()=>{
+ const people=[{id:'a',characterId:'a',castEligible:true},{id:'b',characterId:'b',castEligible:false}]
+ const relations=[{fromId:'a',toId:'b',label:'提及'}]
+ assert.equal(relationshipGraph(people,relations,[]).nodes.length,1)
+ assert.equal(relationshipGraph(people,relations,[],true).nodes.length,2)
+})
+const experimentCode=ts.transpileModule(readFileSync(new URL('../src/experimentRuntime.ts',import.meta.url),'utf8'),{compilerOptions:{module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022}}).outputText
+const {redactExperiment,normalizedSelection,cropPixels,experimentTime,captureScrollOffset}=await import('data:text/javascript;base64,'+Buffer.from(experimentCode).toString('base64'))
+test('experiment logs keep instructions and changes but exclude nested credentials and sensitive patch values',()=>{
+ const value=redactExperiment({instruction:'合并唐太宗与太宗',password:'private',nested:{api_key:'secret'},changes:[{path:'/settings/password',value:'secret',before:'old'}]})
+ assert.equal(value.instruction,'合并唐太宗与太宗');assert.ok(!JSON.stringify(value).includes('secret'));assert.ok(!JSON.stringify(value).includes('private'));assert.equal(value.changes[0].value,'[已省略敏感输入]')
+})
+test('screenshot crop uses original pixels for reverse drags and clamps the selected region',()=>{
+ const box=normalizedSelection({x:.8,y:.7},{x:.2,y:.1})
+ assert.deepEqual(cropPixels(box,2000,1000),{x:400,y:100,w:1200,h:600})
+ assert.deepEqual(cropPixels(normalizedSelection({x:-1,y:-1},{x:2,y:2}),1440,900),{x:0,y:0,w:1440,h:900})
+})
+test('experiment time displays full duration across hour boundaries',()=>{
+ assert.equal(experimentTime(3661500),'01:01:01');assert.equal(experimentTime(-20),'00:00:00')
+})
+
+test('page capture applies document scrolling once for both body and html scrolling roots',()=>{
+ assert.deepEqual(captureScrollOffset({x:20,y:705},{x:20,y:705}),{x:0,y:0})
+ assert.deepEqual(captureScrollOffset({x:20,y:705},{x:0,y:0}),{x:20,y:705})
+})

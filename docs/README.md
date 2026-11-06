@@ -1,3 +1,5 @@
+> 新资料整理交互：[多来源资料整理与统一反馈](30-material-pipeline.md)。Overview 含主流程图及独立资料整理子流程图。
+
 > 当前操作规则： [简化审核与工作流](22-review-workflow.md) · [验证与恢复记录](23-review-verification.md) · [首次加载与群体叠卡](24-loading-and-visual-groups.md) · [人物框与可视化线索树](25-visual-clue-tree.md) · [体验保留与手动刷新](26-persistent-experience.md)。旧分部文档保留数据和接口沿革，交互规则以这些文档为准。
 
 # AnimatedScroll 创作工作台
@@ -38,3 +40,7 @@
 资料相关流程以第18章为准：两个旧资料面板已合并，结构化草稿随资料统一确认。第14章保留 SQL 八表的严格字段及兼容约束。
 
 19. [入画角色设定、分段依据与线索引导](19-入画角色设定与线索引导.md)
+
+- [分镜视频额度与提示词检查](31-video-production.md)
+
+- [实验记录、截图便笺与画内分镜](32-experiments-and-montage.md)

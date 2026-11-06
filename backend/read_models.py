@@ -3,7 +3,7 @@ import hashlib,json,threading
 from pathlib import Path
 from fastapi import HTTPException
 from . import storage
-POLICY=hashlib.sha256(b''.join((Path(__file__).parent/name).read_bytes() for name in ('read_models.py','review_units.py','workspace.py','persona.py','revisions.py','experience.py'))).hexdigest()[:20]
+POLICY=hashlib.sha256(b''.join((Path(__file__).parent/name).read_bytes() for name in ('read_models.py','review_units.py','workspace.py','persona.py','revisions.py','experience.py','people_policy.py'))).hexdigest()[:20]
 _lock=threading.RLock()
 
 def schema(c):
